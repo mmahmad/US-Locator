@@ -1,4 +1,4 @@
-The Flask application is based on Python 3.7, but is running on a Python 3.6 AWS EBS environment.
+The Flask application is based on Python 3.7 and MySQL 5.5.61, but is running on a Python 3.6 AWS EBS environment.
 
 1) Set up Python3.7
 2) Clone the repo, and cd into the root of the project
