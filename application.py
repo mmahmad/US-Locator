@@ -1,5 +1,29 @@
 from flask import Flask
 from flaskext.mysql import MySQL
+import json
+
+# EB looks for an 'application' callable by default.
+application = Flask(__name__)
+
+# Import configuration for database connection
+with open('app-config.json') as config:
+    app_config = json.load(config)
+
+db_config = app_config['database']
+
+mysql = MySQL()
+
+# MySQL configurations
+application.config['MYSQL_DATABASE_USER'] = db_config['user']
+application.config['MYSQL_DATABASE_PASSWORD'] = db_config['password']
+application.config['MYSQL_DATABASE_DB'] = db_config['database']
+application.config['MYSQL_DATABASE_HOST'] = db_config['host']
+
+# Init db connection and get cursor
+mysql.init_app(application)
+conn = mysql.connect()
+cursor = conn.cursor()
+
 # import os
 
 # if 'RDS_HOSTNAME' in os.environ:
@@ -28,26 +52,8 @@ instructions = '''
 home_link = '<p><a href="/">Back</a></p>\n'
 footer_text = '</body>\n</html>'
 
-# EB looks for an 'application' callable by default.
-application = Flask(__name__)
-# MySQL configurations
-# application.config['MYSQL_USER'] = 'cs411'
-# application.config['MYSQL_PASSWORD'] = 'cs411dbuser'
-# application.config['MYSQL_DB'] = 'ebdb'
-# application.config['MYSQL_HOST'] = 'aa1enwpis40fd9h.crncuapzhdos.us-west-2.rds.amazonaws.com'
-
-mysql = MySQL()
-# MySQL configurations
-application.config['MYSQL_DATABASE_USER'] = 'cs411'
-application.config['MYSQL_DATABASE_PASSWORD'] = 'cs411dbuser'
-application.config['MYSQL_DATABASE_DB'] = 'ebdb'
-application.config['MYSQL_DATABASE_HOST'] = 'aa1enwpis40fd9h.crncuapzhdos.us-west-2.rds.amazonaws.com'
-mysql.init_app(application)
-
 # cursor = mysql.get_db().cursor()
 # cursor = mysql.connect().cursor()
-conn = mysql.connect()
-cursor = conn.cursor()
 # cur = mysql.connect().cursor()
 
 # add a rule for the index page.
