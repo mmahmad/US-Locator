@@ -1,0 +1,1 @@
+Do NOT change the file name of application.py, nor the variable "application" inside it. EBS relies on that to run properly. Other than that, feel free to modify.
