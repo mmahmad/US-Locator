@@ -1,0 +1,8 @@
+{
+    "database": {
+        "user": "cs411",
+        "password": "cs411dbuser",
+        "database": "ebdb",
+        "host": "aa1enwpis40fd9h.crncuapzhdos.us-west-2.rds.amazonaws.com"
+    }
+}
