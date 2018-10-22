@@ -11,5 +11,6 @@ The Flask application is based on Python 3.7 and MySQL 5.5.61, but is running on
 1) Clone the repo, and cd into the root of the project
 2) Load virtual environment `source virt/bin/activate`
 3) run `pip install -r requirements.txt`
+4) running `python application.py` should start a local server, with the project's localhost URL:port printed on the terminal
 
 Do <b>NOT</b> change the file name of `application.py`, nor the variable `application` inside it. EBS relies on that to run properly. Other than that, feel free to modify.
