@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template
 from flaskext.mysql import MySQL
 import json
 
@@ -65,7 +65,8 @@ def users():
     cursor.execute('''SELECT * FROM ebdb.test limit 0, 1;''')
     rv = cursor.fetchall()
     print(rv)
-    return "<p>Hello World!</p>"
+    return render_template('home.html')
+	#return "<p>Hello World!</p>"
     # print rv
     # return str(rv)
 
