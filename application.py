@@ -1,12 +1,13 @@
-from flask import Flask, render_template
+from flask import Flask, request, render_template
 from flaskext.mysql import MySQL
+
 import json
 
 # EB looks for an 'application' callable by default.
 application = Flask(__name__)
 
 # Import configuration for database connection
-with open('app-config.json') as config:
+with open('app-config.json') as config: 
     app_config = json.load(config)
 
 db_config = app_config['database']
@@ -19,11 +20,11 @@ application.config['MYSQL_DATABASE_PASSWORD'] = db_config['password']
 application.config['MYSQL_DATABASE_DB'] = db_config['database']
 application.config['MYSQL_DATABASE_HOST'] = db_config['host']
 
-# Init db connection and get cursor
+#Init db connection and get cursor
 mysql.init_app(application)
 conn = mysql.connect()
 cursor = conn.cursor()
-
+    
 # import os
 
 # if 'RDS_HOSTNAME' in os.environ:
@@ -62,14 +63,30 @@ footer_text = '</body>\n</html>'
 
 @application.route('/')
 def users():
-    cursor.execute('''SELECT * FROM ebdb.test limit 0, 1;''')
-    rv = cursor.fetchall()
-    print(rv)
-    return render_template('home.html')
-	#return "<p>Hello World!</p>"
-    # print rv
-    # return str(rv)
+	#cursor.execute(''' SELECT * FROM ebdb.test limit 0, 1; ''')
+	#rv = cursor.fetchall()
+    #print(rv)
+	return render_template('home.html')
+    #return "<p>Hello World!</p>"
+    #print rv
+	#return str(rv)
 
+@application.route('/', methods=['POST'])
+def my_form_post():
+	id = request.form['id']
+	first = request.form['fname']
+	last = request.form['lname']
+	email = request.form['email']
+	
+	
+	query = "INSERT INTO ebdb.test VALUES(%s, %s, %s, %s,NULL);"
+	cursor.execute(query, [id, first, last, email])
+	conn.commit()
+	return render_template('home.html')
+    
+    #processed_text = text.upper()
+    #return processed_text
+	
 # add a rule when the page is accessed with a name appended to the site
 # URL.
 # application.add_url_rule('/<username>', 'hello', (lambda username:
