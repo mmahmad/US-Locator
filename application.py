@@ -128,7 +128,26 @@ def getZipWithinAvgTemp():
 	returnedData = cursor.fetchall()
 	return jsonify({'data': returnedData})
 
+# Return all zipcodes in a given city/county/state. 2 GET params required
+# run http://127.0.0.1:5000/api/zipcodes/region?region=state&region_value=illinois
+@application.route('/api/zipcodes/region', methods=['GET'])
+def getZipcodesInCity():
+	region = request.args.get('region')
+	region_value = request.args.get('region_value')
 
+	if (region and region_value):
+		if (region == 'city'):
+			query = 'SELECT zip_code FROM temp_zipcode_data WHERE city_name = %s'
+		elif (region == 'county'):
+			query = 'SELECT zip_code FROM temp_zipcode_data WHERE county_name = %s'
+		elif (region == 'state'):
+			query = 'SELECT zip_code FROM temp_zipcode_data WHERE state_name = %s'
+
+		cursor.execute(query, (region_value))
+		returnedData = cursor.fetchall()
+		return jsonify({'data': returnedData})
+	else:
+		abort(404)
 
 # add a rule when the page is accessed with a name appended to the site
 # URL.
