@@ -97,6 +97,8 @@ def my_form_post():
 	#processed_text = text.upper()
 	# return processed_text
 
+############################################ APIs Begin ################################################################################
+
 # run http://127.0.0.1:5000/api/test/zip/61801
 @application.route('/api/test/zip/<int:zipcode>', methods=['GET'])
 def getTestJSON(zipcode):
@@ -148,6 +150,8 @@ def getZipcodesInCity():
 		return jsonify({'data': returnedData})
 	else:
 		abort(404)
+
+############################################################ APIs End #####################################################################
 
 # add a rule when the page is accessed with a name appended to the site
 # URL.
