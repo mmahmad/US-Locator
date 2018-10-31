@@ -6,7 +6,8 @@ CREATE TABLE IF NOT EXISTS political_parties(
 );
 
 CREATE TABLE IF NOT EXISTS states(
-  name varchar (50) PRIMARY KEY UNIQUE NOT NULL, 
+  name varchar (50) PRIMARY KEY UNIQUE NOT NULL,
+  state_code char(2), 
   capital varchar (50),
   total_area bigint,
   current_political_party varchar (50),
