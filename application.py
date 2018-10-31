@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, jsonify, abort
+from flask import Flask, request, render_template, jsonify, abort, make_response
 from flaskext.mysql import MySQL
 from pymysql.cursors import DictCursor
 
@@ -65,6 +65,11 @@ footer_text = '</body>\n</html>'
 # application.add_url_rule('/', 'index', (lambda: header_text +
 #     say_hello() + instructions + footer_text))
 
+# Error handler in case of 404 (can customize this)
+# invoked when `abort(404)` called
+@application.errorhandler(404)
+def not_found(error):
+    return make_response(jsonify({'error': 'Not found'}), 404)
 
 @application.route('/')
 def users():
