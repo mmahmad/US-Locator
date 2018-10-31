@@ -106,8 +106,8 @@ def getTestJSON(zipcode):
 	returnedData = cursor.fetchall()
 	return jsonify({'data': returnedData})
 
-# run http://127.0.0.1:5000/api/zipcode/info?zipcode=61801
 # Given a zipcode as GET query param, get its information
+# run http://127.0.0.1:5000/api/zipcode/info?zipcode=61801
 @application.route('/api/zipcode/info', methods=['GET'])
 def getInfoForZipcode():
 	zipcode = request.args.get('zipcode')
@@ -115,6 +115,20 @@ def getInfoForZipcode():
 	cursor.execute(query, (zipcode))
 	returnedData = cursor.fetchall()
 	return jsonify({'data': returnedData})
+
+# Return all zipcodes that have avg temperatures between <low> and <high> inclusive
+# run http://127.0.0.1:5000/api/weather/avgTempRange?low=40&high=90
+@application.route('/api/weather/avgTempRange', methods=['GET'])
+def getZipWithinAvgTemp():
+	low = request.args.get('low')
+	high = request.args.get('high')
+
+	query = 'SELECT zip_code, average_temperature FROM temp_zipcode_data WHERE average_temperature BETWEEN %s and %s'
+	cursor.execute(query, (low, high))
+	returnedData = cursor.fetchall()
+	return jsonify({'data': returnedData})
+
+
 
 # add a rule when the page is accessed with a name appended to the site
 # URL.
