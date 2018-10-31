@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS states(
 );
 
 CREATE TABLE IF NOT EXISTS cities(
-  id int PRIMARY KEY UNIQUE NOT NULL,
+  id int PRIMARY KEY UNIQUE NOT NULL AUTO_INCREMENT,
   name varchar (50) NOT NULL, 
   state varchar (50) NOT NULL,
   FOREIGN KEY (state) REFERENCES states(name)
