@@ -22,6 +22,7 @@ CREATE TABLE IF NOT EXISTS cities(
 );
 
 CREATE TABLE IF NOT EXISTS zipcodes(
+  id int AUTO_INCREMENT PRIMARY KEY,
   zipcode char(12) PRIMARY KEY UNIQUE NOT NULL,
   latitude char(20),
   longitude char(20),
@@ -32,21 +33,21 @@ CREATE TABLE IF NOT EXISTS zipcodes(
 );
 
 CREATE TABLE IF NOT EXISTS crime_stats(
-  zipcode char(12) PRIMARY KEY UNIQUE NOT NULL,
+  zipcode int NOT NULL PRIMARY KEY,
   violent int,
   non_violent int,
   theft int,
   murder int,
-  FOREIGN KEY (zipcode) REFERENCES zipcodes(zipcode)
+  FOREIGN KEY (zipcode) REFERENCES zipcodes(id)
 );
 
 CREATE TABLE IF NOT EXISTS home_stats(
-  zipcode char(12) PRIMARY KEY UNIQUE NOT NULL,
+  zipcode int NOT NULL PRIMARY KEY,
   median_home_value int,
   median_rent int,
   median_sq_ft int,
   value_appreciate_10_yrs int,
-  FOREIGN KEY (zipcode) REFERENCES zipcodes(zipcode)
+  FOREIGN KEY (zipcode) REFERENCES zipcodes(id)
 );
 
 CREATE TABLE IF NOT EXISTS literacy_stats(
@@ -58,20 +59,20 @@ CREATE TABLE IF NOT EXISTS literacy_stats(
 );
 
 CREATE TABLE IF NOT EXISTS employment_stats(
-  zipcode char(12) PRIMARY KEY UNIQUE NOT NULL,
+  zipcode int PRIMARY KEY NOT NULL,
   median_household_salary int,
   unemployment_rate int,
   job_growth_1_yr int,
   job_growth_10_yrs int,
-  FOREIGN KEY (zipcode) REFERENCES zipcodes(zipcode)
+  FOREIGN KEY (zipcode) REFERENCES zipcodes(id)
 );
 
 CREATE TABLE IF NOT EXISTS weather_stats(
-  zipcode char(12) PRIMARY KEY UNIQUE NOT NULL,
+  zipcode int PRIMARY KEY NOT NULL,
   avg_summer_lows int,
   avg_summer_highs int,
   avg_winter_lows int,
   avg_winter_highs int,
   avg_precipitation_per_yr int,
-  FOREIGN KEY (zipcode) REFERENCES zipcodes(zipcode)
+  FOREIGN KEY (zipcode) REFERENCES zipcodes(id)
 );
