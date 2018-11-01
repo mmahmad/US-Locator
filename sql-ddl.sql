@@ -68,11 +68,9 @@ CREATE TABLE IF NOT EXISTS employment_stats(
 );
 
 CREATE TABLE IF NOT EXISTS weather_stats(
-  zipcode int PRIMARY KEY NOT NULL,
-  avg_summer_lows int,
-  avg_summer_highs int,
-  avg_winter_lows int,
-  avg_winter_highs int,
-  avg_precipitation_per_yr int,
-  FOREIGN KEY (zipcode) REFERENCES zipcodes(id)
+  zipcode_id int PRIMARY KEY NOT NULL,
+  avg_temp FLOAT,
+  min_monthly_lows FLOAT,
+  max_monthly_highs FLOAT,
+  FOREIGN KEY (zipcode_id) REFERENCES zipcodes(id)
 );
