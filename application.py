@@ -1,6 +1,8 @@
 from flask import Flask, request, render_template, jsonify, abort, make_response
 from flaskext.mysql import MySQL
 from pymysql.cursors import DictCursor
+import hashlib, uuid
+from passlib.hash import sha256_crypt
 
 import json
 
@@ -98,6 +100,28 @@ def my_form_post():
 	# return processed_text
 
 ############################################ APIs Begin ################################################################################
+
+# create user
+@application.route('/api/user/new', methods=['GET'])
+def createNewUser():
+	username = request.args.get('username')
+	password = request.args.get('password')
+	# salt = uuid.uuid4().hex
+	# hashed_password = hashlib.sha512(password + salt).hexdigest()
+	encrypted_passwd = sha256_crypt.encrypt(password)
+
+	# check if username already exists in db
+
+	query = 'SELECT username FROM users WHERE username = %s'
+	cursor.execute(query, (username))
+	returnedData = cursor.fetchall()
+	if len(returnedData) > 0:
+		# user already exists, so return error
+		return jsonify({'error': 'Username already exists.'})
+	else:
+		query = 'INSERT INTO users(username, passwd) VALUES(%s, %s)'
+		cursor.execute(query, (username, encrypted_passwd))
+		return jsonify({'success': 'User created successfully'})
 
 # run http://127.0.0.1:5000/api/test/zip/61801
 @application.route('/api/test/zip/<int:zipcode>', methods=['GET'])
