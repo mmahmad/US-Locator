@@ -201,14 +201,6 @@ def addFavorite():
 		cursor.execute(query, (favoritesId))
 		conn.commit()
 		return jsonify({'success': 'Zipcode deleted from favorites list'})
-	
-		
-
-
-
-
-
-
 
 # run http://127.0.0.1:5000/api/test/zip/61801
 @application.route('/api/test/zip/<int:zipcode>', methods=['GET'])
@@ -241,6 +233,14 @@ def getZipWithinAvgTemp():
 	returnedData = cursor.fetchall()
 	return jsonify({'data': returnedData})
 
+@application.route('/api/weather/weatherPerState', methods=['GET'])
+def getWeatherPerState():
+
+	query = 'select z.state, w.avg_temp, w.min_monthly_lows, w.max_monthly_highs from zipcodes z join weather_stats w on z.id=w.zipcode_id group by z.state'
+	cursor.execute(query)
+	returnedData = cursor.fetchall()
+	return jsonify({'data': returnedData})
+
 # Return all zipcodes in a given city/county/state. 2 GET params required
 # run http://127.0.0.1:5000/api/zipcodes/region?region=state&region_value=illinois
 @application.route('/api/zipcodes/region', methods=['GET'])
@@ -261,6 +261,18 @@ def getZipcodesInCity():
 		return jsonify({'data': returnedData})
 	else:
 		abort(404)
+
+@application.route('/api/zipcodes/housing', methods=['GET'])
+def getHousePrices():
+	operator1 = request.args.get('operator')
+	houseprice1 = request.args.get('houseprice1')
+
+	query = 'SELECT zipcode, median_house_price FROM home_stats hs JOIN zipcodes z on hs.zipcode_id = z.id WHERE median_house_price %s %s'
+	cursor.execute(query, (operator1, houseprice1))
+	returnedData = cursor.fetchall()
+	return jsonify({'data': returnedData})
+
+
 
 ############################################################ APIs End #####################################################################
 
