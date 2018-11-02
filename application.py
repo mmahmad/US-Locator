@@ -179,7 +179,7 @@ def addFavorite():
 	elif request.method == 'GET':
 		userId = request.args.get('userId')
 
-		query = 'SELECT id, zipcode FROM zipcodes z JOIN favorites f on f.zipcode_id=z.id WHERE f.user_id=%s'
+		query = 'SELECT f.id, z.zipcode FROM zipcodes z JOIN favorites f on f.zipcode_id=z.id WHERE f.user_id=%s'
 		cursor.execute(query, (userId))
 		returnedData = cursor.fetchall()
 		return jsonify({'data': returnedData})
@@ -308,6 +308,18 @@ def getHousePrices():
 		return jsonify({'data': returnedData})
 	else:
 		return jsonify({'error': 'Supported operators are: lessThan, greaterThan, equalTo, equalToOrGreaterThan, lessThanOrEqualTo'})
+
+# Given a zipcode, get that zip's county's crime info
+@application.route('/api/zipcodes/crime', methods=['GET'])
+def getCountyCrimeGivenZip():
+	zipcode = request.args.get('zipcode')
+	query = 'SELECT z.zipcode, tz.county_name, ccd.violent_crimes_total, ccd.murders, ccd.rapes, ccd.robberies, ccd.assaults, ccd.burglaries, ccd.larceny_thefts, ccd.vehicle_thefts FROM zipcodes z JOIN temp_zipcode_data tz ON z.zipcode=tz.zip_code JOIN county_crime_data ccd ON tz.county_name=ccd.county WHERE z.zipcode=%s;'
+	cursor.execute(query, (zipcode))
+	returnedData = cursor.fetchall()
+	if (len(returnedData) > 1):
+		returnedData = returnedData[1]
+	return jsonify({'data': returnedData})
+
 
 
 
