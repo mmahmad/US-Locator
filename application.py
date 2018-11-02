@@ -237,7 +237,7 @@ def getZipWithinAvgTemp():
 	low = request.args.get('low')
 	high = request.args.get('high')
 
-	query = 'SELECT zip_code, average_temperature FROM temp_zipcode_data WHERE average_temperature BETWEEN %s and %s'
+	query = 'SELECT zip_code, average_temperature, county_name, city_name, state_name FROM temp_zipcode_data WHERE average_temperature BETWEEN %s and %s'
 	cursor.execute(query, (low, high))
 	returnedData = cursor.fetchall()
 	return jsonify({'data': returnedData})
