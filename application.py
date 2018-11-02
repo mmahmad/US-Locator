@@ -221,6 +221,7 @@ def getInfoForZipcode():
 	returnedData = cursor.fetchall()
 	return jsonify({'data': returnedData})
 
+# Given a state, find all the cities in it
 @application.route('/api/list/cities', methods=['GET'])
 def getListOfCitiesGivenState():
 	state = request.args.get('state')
@@ -241,6 +242,7 @@ def getZipWithinAvgTemp():
 	returnedData = cursor.fetchall()
 	return jsonify({'data': returnedData})
 
+# Get aggregated weather information per state
 @application.route('/api/weather/weatherPerState', methods=['GET'])
 def getWeatherPerState():
 
@@ -270,15 +272,42 @@ def getZipcodesInCity():
 	else:
 		abort(404)
 
+# Get all locations if the given median housing price is satisfied
+# SQL INJECTION POSSIBLE HERE!!!!!!!!!!
 @application.route('/api/zipcodes/housing', methods=['GET'])
 def getHousePrices():
-	operator1 = request.args.get('operator')
+
+	operator1 = request.args.get('operator1')
 	houseprice1 = request.args.get('houseprice1')
 
-	query = 'SELECT zipcode, median_house_price FROM home_stats hs JOIN zipcodes z on hs.zipcode_id = z.id WHERE median_house_price %s %s'
-	cursor.execute(query, (operator1, houseprice1))
-	returnedData = cursor.fetchall()
-	return jsonify({'data': returnedData})
+	sqlOperator1 = None
+
+	query = 'SELECT z.zipcode, z.latitude, z.longitude, hs.median_house_price FROM home_stats hs JOIN zipcodes z on hs.zipcode_id = z.id WHERE median_house_price '
+
+	if operator1 == 'lessThan':
+		query += '< '
+	elif operator1 == 'greaterThan':
+		query += '> '
+	elif operator1 == 'equalTo':
+		query += '= '
+	elif operator1 == 'equalToOrGreaterThan':
+		query += '>= '
+	elif operator1 == 'lessThanOrEqualTo':
+		query += '<= '
+	else:
+		return jsonify({'error': 'Supported operators are: lessThan, greaterThan, equalTo, equalToOrGreaterThan, lessThanOrEqualTo'})
+
+	print('sqlOperator1:')
+	print(sqlOperator1)
+	
+	if houseprice1:
+		query += str(houseprice1)
+		cursor.execute(query)
+		# cursor.execute(query)
+		returnedData = cursor.fetchall()
+		return jsonify({'data': returnedData})
+	else:
+		return jsonify({'error': 'Supported operators are: lessThan, greaterThan, equalTo, equalToOrGreaterThan, lessThanOrEqualTo'})
 
 
 
