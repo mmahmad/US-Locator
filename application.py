@@ -164,6 +164,20 @@ def userLogin():
 	else:
 		return jsonify({'error': 'Invalid username or password'})
 
+@application.route('/api/user/favorite', methods=['POST', 'GET', 'PUT'])
+def addFavorite():
+	if request.method == 'POST':
+		userId = request.form.get('userId')
+		zipcode_id = request.form.get('zipcodeId')
+
+		query = 'INSERT INTO favorites(user_id, zipcode_id) VALUES (%s, %s)'
+		cursor.execute(query, (userId, zipcode_id))
+		conn.commit()
+		return jsonify({'success': 'Zipcode added to favorites'})
+
+
+
+
 # run http://127.0.0.1:5000/api/test/zip/61801
 @application.route('/api/test/zip/<int:zipcode>', methods=['GET'])
 def getTestJSON(zipcode):
