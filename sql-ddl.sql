@@ -41,13 +41,20 @@ CREATE TABLE IF NOT EXISTS crime_stats(
   FOREIGN KEY (zipcode) REFERENCES zipcodes(id)
 );
 
-CREATE TABLE IF NOT EXISTS home_stats(
-  zipcode int NOT NULL PRIMARY KEY,
-  median_home_value int,
-  median_rent int,
-  median_sq_ft int,
-  value_appreciate_10_yrs int,
-  FOREIGN KEY (zipcode) REFERENCES zipcodes(id)
+-- CREATE TABLE IF NOT EXISTS home_stats(
+--   zipcode int NOT NULL PRIMARY KEY,
+--   median_home_value int,
+--   median_rent int,
+--   median_sq_ft int,
+--   value_appreciate_10_yrs int,
+--   FOREIGN KEY (zipcode) REFERENCES zipcodes(id)
+-- );
+
+CREATE TABLE home_stats(
+    zipcode_id int primary key,
+    median_house_price bigint,
+    population_density float,
+    FOREIGN KEY (zipcode_id) REFERENCES zipcodes(id) 
 );
 
 CREATE TABLE IF NOT EXISTS literacy_stats(
