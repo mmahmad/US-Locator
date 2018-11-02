@@ -103,10 +103,10 @@ def my_form_post():
 
 # TODO: Use POST instead of GET
 # create user
-@application.route('/api/user/new', methods=['GET'])
+@application.route('/api/user/create', methods=['POST'])
 def createNewUser():
-	username = request.args.get('username')
-	password = request.args.get('password')
+	username = request.form.get('username')
+	password = request.form.get('password')
 	# salt = uuid.uuid4().hex
 	# hashed_password = hashlib.sha512(password + salt).hexdigest()
 	# encrypted_passwd = sha256_crypt.encrypt(password)
@@ -129,10 +129,10 @@ def createNewUser():
 
 
 # User login
-@application.route('/api/user/login', methods=['GET'])
+@application.route('/api/user/login', methods=['POST'])
 def userLogin():
-	username = request.args.get('username')
-	password = request.args.get('password')
+	username = request.form.get('username')
+	password = request.form.get('password')
 	# salt = uuid.uuid4().hex
 	# hashed_password = hashlib.sha512(password + salt).hexdigest()
 	# encrypted_passwd = sha256_crypt.encrypt(password)
@@ -141,9 +141,10 @@ def userLogin():
 
 	# 
 
-	query = 'SELECT username FROM users WHERE username = %s AND passwd=%s'
+	query = 'SELECT id, username FROM users WHERE username = %s AND passwd=%s'
 	cursor.execute(query, (username, password))
 	returnedData = cursor.fetchall()
+	print(returnedData)
 	if len(returnedData) > 0:
 		# return jsonify({'success': 'Authentication successful'})
 		# check if pwds match
@@ -159,7 +160,7 @@ def userLogin():
 		# else:
 		# 	return jsonify({'error': 'Invalid username or password'})
 
-		return jsonify({'success': 'Authentication successful'})
+		return jsonify({'success': 'Authentication successful', 'userId': returnedData[0]['id']})
 
 	else:
 		return jsonify({'error': 'Invalid username or password'})
