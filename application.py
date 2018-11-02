@@ -221,6 +221,14 @@ def getInfoForZipcode():
 	returnedData = cursor.fetchall()
 	return jsonify({'data': returnedData})
 
+@application.route('/api/list/cities', methods=['GET'])
+def getListOfCitiesGivenState():
+	state = request.args.get('state')
+	query = 'SELECT id, name FROM cities WHERE state = %s;'
+	cursor.execute(query, (state))
+	returnedData = cursor.fetchall()
+	return jsonify({'data': returnedData})
+
 # Return all zipcodes that have avg temperatures between <low> and <high> inclusive
 # run http://127.0.0.1:5000/api/weather/avgTempRange?low=40&high=90
 @application.route('/api/weather/avgTempRange', methods=['GET'])
