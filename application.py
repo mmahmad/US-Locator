@@ -1,8 +1,6 @@
 from flask import Flask, request, render_template, jsonify, abort, make_response
 from flaskext.mysql import MySQL
 from pymysql.cursors import DictCursor
-import hashlib, uuid
-from passlib.hash import sha256_crypt
 
 import json
 
@@ -165,7 +163,7 @@ def userLogin():
 	else:
 		return jsonify({'error': 'Invalid username or password'})
 
-@application.route('/api/user/favorites', methods=['POST', 'GET', 'PUT'])
+@application.route('/api/user/favorites', methods=['POST', 'GET', 'PUT', 'DELETE'])
 def addFavorite():
 	# Add to favorites list
 	if request.method == 'POST':
@@ -188,7 +186,6 @@ def addFavorite():
 
 	# Update favorites list
 	elif request.method == 'PUT':
-		userId = request.args.get('userId')
 		favoritesId = request.args.get('favoritesId')
 		newZipcodeId = request.args.get('newZipcodeId')
 
@@ -196,6 +193,17 @@ def addFavorite():
 		cursor.execute(query, (newZipcodeId, favoritesId))
 		conn.commit()
 		return jsonify({'success': 'Favorite zipcode updated'})
+
+	elif request.method == 'DELETE':
+		favoritesId = request.args.get('favoritesId')
+		
+		query = 'DELETE FROM favorites WHERE id=%s'
+		cursor.execute(query, (favoritesId))
+		conn.commit()
+		return jsonify({'success': 'Zipcode deleted from favorites list'})
+	
+		
+
 
 
 
