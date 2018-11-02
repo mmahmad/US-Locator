@@ -74,3 +74,18 @@ CREATE TABLE IF NOT EXISTS weather_stats(
   max_monthly_highs FLOAT,
   FOREIGN KEY (zipcode_id) REFERENCES zipcodes(id)
 );
+
+create table if not exists users(
+	id int primary key auto_increment,
+    username varchar(50) unique not null,
+    passwd varchar(100) not null,
+    salt varchar(100) not null
+    );
+    
+create table if not exists favorites(
+    id int primary key auto_increment,
+	user_id int not null,
+    zipcode_id int,
+    foreign key (user_id) references users(id),
+    foreign key (zipcode_id) references zipcodes(id)
+);
