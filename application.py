@@ -165,16 +165,39 @@ def userLogin():
 	else:
 		return jsonify({'error': 'Invalid username or password'})
 
-@application.route('/api/user/favorite', methods=['POST', 'GET', 'PUT'])
+@application.route('/api/user/favorites', methods=['POST', 'GET', 'PUT'])
 def addFavorite():
+	# Add to favorites list
 	if request.method == 'POST':
 		userId = request.form.get('userId')
-		zipcode_id = request.form.get('zipcodeId')
+		zipcodeId = request.form.get('zipcodeId')
 
 		query = 'INSERT INTO favorites(user_id, zipcode_id) VALUES (%s, %s)'
-		cursor.execute(query, (userId, zipcode_id))
+		cursor.execute(query, (userId, zipcodeId))
 		conn.commit()
 		return jsonify({'success': 'Zipcode added to favorites'})
+
+	# Get favorites list
+	elif request.method == 'GET':
+		userId = request.args.get('userId')
+
+		query = 'SELECT id, zipcode FROM zipcodes z JOIN favorites f on f.zipcode_id=z.id WHERE f.user_id=%s'
+		cursor.execute(query, (userId))
+		returnedData = cursor.fetchall()
+		return jsonify({'data': returnedData})
+
+	# Update favorites list
+	elif request.method == 'PUT':
+		userId = request.args.get('userId')
+		favoritesId = request.args.get('favoritesId')
+		newZipcodeId = request.args.get('newZipcodeId')
+
+		query = 'UPDATE favorites SET zipcode_id=%s WHERE id=%s'
+		cursor.execute(query, (newZipcodeId, favoritesId))
+		conn.commit()
+		return jsonify({'success': 'Favorite zipcode updated'})
+
+
 
 
 
