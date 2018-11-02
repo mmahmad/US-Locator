@@ -101,6 +101,7 @@ def my_form_post():
 
 ############################################ APIs Begin ################################################################################
 
+# TODO: Use POST instead of GET
 # create user
 @application.route('/api/user/new', methods=['GET'])
 def createNewUser():
@@ -108,20 +109,60 @@ def createNewUser():
 	password = request.args.get('password')
 	# salt = uuid.uuid4().hex
 	# hashed_password = hashlib.sha512(password + salt).hexdigest()
-	encrypted_passwd = sha256_crypt.encrypt(password)
+	# encrypted_passwd = sha256_crypt.encrypt(password)
 
 	# check if username already exists in db
 
 	query = 'SELECT username FROM users WHERE username = %s'
 	cursor.execute(query, (username))
+	
 	returnedData = cursor.fetchall()
 	if len(returnedData) > 0:
 		# user already exists, so return error
 		return jsonify({'error': 'Username already exists.'})
 	else:
-		query = 'INSERT INTO users(username, passwd) VALUES(%s, %s)'
-		cursor.execute(query, (username, encrypted_passwd))
+		query = 'INSERT INTO users(username, passwd) VALUES (%s, %s)'
+		# cursor.execute(query, (username, encrypted_passwd))
+		cursor.execute(query, (username, password))
+		conn.commit()
 		return jsonify({'success': 'User created successfully'})
+
+
+# User login
+@application.route('/api/user/login', methods=['GET'])
+def userLogin():
+	username = request.args.get('username')
+	password = request.args.get('password')
+	# salt = uuid.uuid4().hex
+	# hashed_password = hashlib.sha512(password + salt).hexdigest()
+	# encrypted_passwd = sha256_crypt.encrypt(password)
+	# print("encrypted password is: ")
+	# print(encrypted_passwd)
+
+	# 
+
+	query = 'SELECT username FROM users WHERE username = %s AND passwd=%s'
+	cursor.execute(query, (username, password))
+	returnedData = cursor.fetchall()
+	if len(returnedData) > 0:
+		# return jsonify({'success': 'Authentication successful'})
+		# check if pwds match
+		# print("returned data:")
+		# print(returnedData)
+		# dbpasswd = returnedData[0]['passwd']
+		# print('dbpasswd: ')
+		# print(dbpasswd)
+
+		# if sha256_crypt.verify(encrypted_passwd, dbpasswd):
+		# 	# verified, so authenticated
+		# 	return jsonify({'success': 'Authentication successful'})
+		# else:
+		# 	return jsonify({'error': 'Invalid username or password'})
+
+		return jsonify({'success': 'Authentication successful'})
+
+	else:
+		return jsonify({'error': 'Invalid username or password'})
 
 # run http://127.0.0.1:5000/api/test/zip/61801
 @application.route('/api/test/zip/<int:zipcode>', methods=['GET'])
