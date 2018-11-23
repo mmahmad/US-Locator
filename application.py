@@ -317,7 +317,7 @@ def getHousePrices():
 @application.route('/api/zipcodes/crime', methods=['GET'])
 def getCountyCrimeGivenZip():
 	zipcode = request.args.get('zipcode')
-	query = 'SELECT z.zipcode, tz.county_name, ccd.violent_crimes_total, ccd.murders, ccd.rapes, ccd.robberies, ccd.assaults, ccd.burglaries, ccd.larceny_thefts, ccd.vehicle_thefts FROM zipcodes z JOIN temp_zipcode_data tz ON z.zipcode=tz.zip_code JOIN county_crime_data ccd ON tz.county_name=ccd.county WHERE z.zipcode=%s;'
+	query = 'SELECT z.zipcode, z.county_name, ccd.violent_crimes_total, ccd.murders, ccd.rapes, ccd.robberies, ccd.assaults, ccd.burglaries, ccd.larceny_thefts, ccd.vehicle_thefts FROM zipcodes z JOIN county_crime_data ccd ON z.county_name=ccd.county WHERE z.zipcode=%s;'
 	cursor.execute(query, (zipcode))
 	returnedData = cursor.fetchall()
 	if (len(returnedData) > 1):
