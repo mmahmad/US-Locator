@@ -84,14 +84,18 @@ def users():
 
 @application.route('/', methods=['POST'])
 def my_form_post():
-	id = request.form['id']
-	first = request.form['fname']
-	last = request.form['lname']
-	email = request.form['email']
+	#id = request.form['id']
+	#first = request.form['fname']
+	#last = request.form['lname']
+	#email = request.form['email']
+	
+	#city = request.form['city']
+	#state = request.form['state']
+	
 
-	query = "INSERT INTO ebdb.test VALUES(%s, %s, %s, %s,NULL);"
-	cursor.execute(query, [id, first, last, email])
-	conn.commit()
+	#query = "INSERT INTO ebdb.test VALUES(%s, %s, %s, %s,NULL);"
+	#cursor.execute(query, [id, first, last, email])
+	#conn.commit()
 	return render_template('home.html')
 
 	#processed_text = text.upper()

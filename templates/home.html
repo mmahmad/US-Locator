@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Page Title</title>
+<title>411 Project</title>
        <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 </head>
-<body >
+<body>
 
 	<nav class="navbar navbar-expand-lg navbar-dark bg-dark text-white">
   <a class="navbar-brand" href="#"></a>
@@ -18,7 +18,7 @@
   <div class="collapse navbar-collapse" id="navbarNav">
     <ul class="navbar-nav ml-auto">
       <li class="nav-item active">
-        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+        <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
       </li>
       <li class="nav-item active">
         <a class="nav-link" href="#">Maps</a>
@@ -29,13 +29,48 @@
 	</nav>
 
 	
-	<div class = "container-fluid" >
-		<h1>CS 411</h1>
-		<p>Paragraph starts here.</p>
+	<div class = "text-center">
+		<h1 class = "display-1 text-center"><font size = "16"> Where to Live</font></h1>
+		
 	</div>
 	
+	<h6 class = "display-4 text-center"><font size = "6">Enter a location</font></h6>
 	
+	<!-- -->
+	<!-- Form for City, State-->
 	<form method = "POST">
+	<div class = "container col-md-4 text-center"> 
+	<div class="form-group display-4">
+
+		<input type="text" input name = "city" class="form-control text-center" id="formGroupExampleInput" placeholder="City" >
+	</div>
+	<div class="form-group display-4">
+
+		<input type="text" input name = "state" class="form-control text-center" id="formGroupExampleInput" placeholder="State">
+	</div>
+	
+	<button type="submit" class="btn btn-primary text-center">Submit</button>
+	
+	</div>
+	</form>
+	
+	<br></br>
+	
+	
+	<!-- Form for Zipcode-->
+	<form action = "/api/zipcode/info" method = "GET">
+	<div class = "container col-md-4 text-center padding-top-sm "> 
+	<div class="form-group display-4">
+
+		<input type="text" input name = "zipcode" class="form-control text-center" id="formGroupExampleInput" placeholder="Zipcode" >
+	</div>
+
+	<button type="submit" class="btn btn-primary text-center">Submit</button>
+	
+	</div>
+	</form>
+	
+	<!--<form method = "POST">
 	<div class="form-group">
 		<label for="formGroupExampleInput">ID</label>
 		<input type="text" input name = "id" class="form-control" id="formGroupExampleInput">
@@ -53,7 +88,7 @@
 		<input type="text" input name = "email" class="form-control" id="formGroupExampleInput3">
 	</div>
 	<button type="submit" class="btn btn-primary">Submit</button>
-	</form>
+	</form>-->
 
  <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
