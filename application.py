@@ -77,6 +77,7 @@ def users():
 	#rv = cursor.fetchall()
 	# print(rv)
 	return render_template('home.html')
+
 	# return "<p>Hello World!</p>"
 	# print rv
 	# return str(rv)
@@ -96,7 +97,20 @@ def my_form_post():
 	#query = "INSERT INTO ebdb.test VALUES(%s, %s, %s, %s,NULL);"
 	#cursor.execute(query, [id, first, last, email])
 	#conn.commit()
-	return render_template('home.html')
+	
+	low = request.form['min_temp']
+	high = request.form['max_temp']
+	
+	min_house = request.form['min_house']
+	max_house = request.form['max_house']
+	
+	
+	query = 'SELECT ws.zipcode_id, ws.avg_temp, hs.median_house_price FROM home_stats hs JOIN weather_stats ws ON hs.zipcode_id = ws.zipcode_id WHERE avg_temp BETWEEN %s and %s AND median_house_price BETWEEN %s and %s'
+	cursor.execute(query, (low, high, min_house, max_house))
+	returnedData = cursor.fetchall()
+	returnedData = json.dumps(returnedData)
+	
+	return render_template('result.html', returnedData = returnedData)
 
 	#processed_text = text.upper()
 	# return processed_text
