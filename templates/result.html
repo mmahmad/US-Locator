@@ -1,14 +1,61 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>411 Project</title>
+<title>Results Page</title>
        <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+	<!-- JQuery CDN link-->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+
+	<script>
+		<!-- JavaScript function to create table based on data returned from application.py -->
+		$(document).ready(function createTable(){
+			var mydata = {{ returnedData|safe }}		
+  
+			var col = [];
+			for (var i = 0; i < mydata.length; i++) {
+				for (var key in mydata[i]) {
+					if (col.indexOf(key) === -1) {
+						col.push(key);
+					}
+				}
+			}
+
+			<!-- create table to add to page -->
+			var table = document.createElement("table");
+			
+			<!-- add first row for the headers -->
+			var tRow = table.insertRow(-1);                  
+
+			for (var i = 0; i < col.length; i++) {
+				var tHead = document.createElement("th");    
+				tHead.innerHTML = col[i];
+				tRow.appendChild(tHead);
+			}
+
+			for (var i = 0; i < mydata.length; i++) {
+				tRow = table.insertRow(-1);
+				for (var j = 0; j < col.length; j++) {
+					var cell = tRow.insertCell(-1);
+					cell.innerHTML = mydata[i][col[j]];
+				}
+			}
+
+			var resultTable = document.getElementById("output1");
+			
+			<!--Make the table a bootstrap table -->
+			resultTable.className = 'table';
+			
+			resultTable.innerHTML = "";
+			resultTable.appendChild(table);
+    });
 	
-	
+	</script>
 </head>
 <body>
 
@@ -30,56 +77,21 @@
 	</div>
 	</nav>
 
-	
-	<div class = "text-center">
-		<h1 class = "display-1 text-center"><font size = "16"> Where to Live</font></h1>
-		
-	</div>
-	
-	<br></br>
-	<br></br>
-	
-	<h6 class = "display-4 text-center"><font size = "6"></font></h6>
 
-	
-	<!-- -->
-	
-	<form method = "POST" >
-	
-	<!-- Row for min temp, max temp-->
-	<div class="row justify-content-center">
-		<div class="form-group display-4">
-			<input type="text" input name = "min_temp" class="form-control mb-2 mr-sm-2 mb-sm-0 text-center" id="formGroupExampleInput" placeholder="Min Avg Temp" >
-		</div>
-		<div class="form-group display-4">
-			<input type="text" input name = "max_temp" class="form-control mb-2 mr-sm-2 mb-sm-0 text-center" id="formGroupExampleInput" placeholder="Max Avg Temp">
-		</div>
-	</div>
-	
-	<!-- Row for min median housing price, max median housing price-->
-	<div class="row justify-content-center">
-		<div class="form-group display-4">
-			<input type="text" input name = "min_house" class="form-control mb-2 mr-sm-2 mb-sm-0 text-center" id="formGroupExampleInput" placeholder="Min House Price" >
-		</div>
-		<div class="form-group display-4">
-			<input type="text" input name = "max_house" class="form-control mb-2 mr-sm-2 mb-sm-0 text-center" id="formGroupExampleInput" placeholder="Max House Price">
-		</div>
-	</div>
-	
-	
+	<div class = "text-center">
+		<h1 class = "display-1 text-center"><font size = "16"> Results</font></h1>
 		
-		<div class="row justify-content-center">
-		<button type="submit" class="btn btn-primary text-center">Submit</button>
-		</div>
-	</form>
-	
-	<br></br>
+	</div>
 	
 	
+	<p id = "output1" align = "center"></p>
+
+
 
  <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
   </body>
+
 </html>
