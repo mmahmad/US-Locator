@@ -221,20 +221,21 @@ def addFavorite():
 		return jsonify({'success': 'Zipcode deleted from favorites list'})
 
 # run http://127.0.0.1:5000/api/test/zip/61801
-@application.route('/api/test/zip/<int:zipcode>', methods=['GET'])
-def getTestJSON(zipcode):
-	zipcode = request.args.get('zipcode')
-	query = 'SELECT state_code, state_name, county_name, city_name, latitude, longitude, average_temperature, min_monthly_lows, max_monthly_highs FROM temp_zipcode_data WHERE zip_code = %s'
-	cursor.execute(query, (zipcode))
-	returnedData = cursor.fetchall()
-	return jsonify({'data': returnedData})
+# @application.route('/api/test/zip/<int:zipcode>', methods=['GET'])
+# def getTestJSON(zipcode):
+# 	zipcode = request.args.get('zipcode')
+# 	query = 'SELECT state_code, state_name, county_name, city_name, latitude, longitude, average_temperature, min_monthly_lows, max_monthly_highs FROM temp_zipcode_data WHERE zip_code = %s'
+# 	cursor.execute(query, (zipcode))
+# 	returnedData = cursor.fetchall()
+# 	return jsonify({'data': returnedData})
 
 # Given a zipcode as GET query param, get its information
 # run http://127.0.0.1:5000/api/zipcode/info?zipcode=61801
 @application.route('/api/zipcode/info', methods=['GET'])
 def getInfoForZipcode():
 	zipcode = request.args.get('zipcode')
-	query = 'SELECT state_code, state_name, county_name, city_name, latitude, longitude, average_temperature, min_monthly_lows, max_monthly_highs FROM temp_zipcode_data WHERE zip_code = %s'
+	# query = 'SELECT state_code, state_name, county_name, city_name, latitude, longitude, average_temperature, min_monthly_lows, max_monthly_highs FROM temp_zipcode_data WHERE zip_code = %s'
+	query = 'SELECT z.state as state_name, z.county_name, c.name as city_name, z.latitude, z.longitude, w.avg_temp, w.min_monthly_lows, w.max_monthly_highs, th.median_house_price, th.population_density FROM zipcodes z JOIN cities c ON z.city_id=c.id JOIN weather_stats w ON z.id=w.zipcode_id JOIN temp_house_data th ON z.zipcode=th.zipcode WHERE z.zipcode = %s'
 	cursor.execute(query, (zipcode))
 	returnedData = cursor.fetchall()
 	return jsonify({'data': returnedData})
@@ -255,7 +256,8 @@ def getZipWithinAvgTemp():
 	low = request.args.get('low')
 	high = request.args.get('high')
 
-	query = 'SELECT zip_code, average_temperature, county_name, city_name, state_name FROM temp_zipcode_data WHERE average_temperature BETWEEN %s and %s'
+	# query = 'SELECT zip_code, average_temperature, county_name, city_name, state_name FROM temp_zipcode_data WHERE average_temperature BETWEEN %s and %s'
+	query = 'SELECT z.zipcode, w.avg_temp, z.county_name, c.name as city_name, z.state as state_name FROM zipcodes z JOIN cities c ON z.city_id=c.id JOIN weather_stats w ON z.id=w.zipcode_id WHERE w.avg_temp BETWEEN %s and %s'
 	cursor.execute(query, (low, high))
 	returnedData = cursor.fetchall()
 	return jsonify({'data': returnedData})
@@ -278,11 +280,15 @@ def getZipcodesInCity():
 
 	if (region and region_value):
 		if (region == 'city'):
-			query = 'SELECT zip_code FROM temp_zipcode_data WHERE city_name = %s'
+			# query = 'SELECT zip_code FROM temp_zipcode_data WHERE city_name = %s'
+			query = 'SELECT z.zipcode, c.name as city_name FROM zipcodes z JOIN cities c ON z.city_id=c.id WHERE c.name = %s'
 		elif (region == 'county'):
-			query = 'SELECT zip_code FROM temp_zipcode_data WHERE county_name = %s'
+			# query = 'SELECT zip_code FROM temp_zipcode_data WHERE county_name = %s'
+			query = 'SELECT z.zipcode, z.county_name FROM zipcodes z WHERE z.county_name = %s'
 		elif (region == 'state'):
-			query = 'SELECT zip_code FROM temp_zipcode_data WHERE state_name = %s'
+			query = 'SELECT z.zipcode, z.state as state_name FROM zipcodes z WHERE z.state = %s'
+		else:
+			abort(404)
 
 		cursor.execute(query, (region_value))
 		returnedData = cursor.fetchall()
@@ -331,7 +337,7 @@ def getHousePrices():
 @application.route('/api/zipcodes/crime', methods=['GET'])
 def getCountyCrimeGivenZip():
 	zipcode = request.args.get('zipcode')
-	query = 'SELECT z.zipcode, tz.county_name, ccd.violent_crimes_total, ccd.murders, ccd.rapes, ccd.robberies, ccd.assaults, ccd.burglaries, ccd.larceny_thefts, ccd.vehicle_thefts FROM zipcodes z JOIN temp_zipcode_data tz ON z.zipcode=tz.zip_code JOIN county_crime_data ccd ON tz.county_name=ccd.county WHERE z.zipcode=%s;'
+	query = 'SELECT z.zipcode, z.county_name, ccd.violent_crimes_total, ccd.murders, ccd.rapes, ccd.robberies, ccd.assaults, ccd.burglaries, ccd.larceny_thefts, ccd.vehicle_thefts FROM zipcodes z JOIN county_crime_data ccd ON z.county_name=ccd.county WHERE z.zipcode=%s;'
 	cursor.execute(query, (zipcode))
 	returnedData = cursor.fetchall()
 	if (len(returnedData) > 1):
