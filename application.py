@@ -83,7 +83,7 @@ def users():
 	# return str(rv)
 
 
-@application.route('/', methods=['POST'])
+@application.route('/results', methods=['POST'])
 def my_form_post():
 	#id = request.form['id']
 	#first = request.form['fname']

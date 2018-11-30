@@ -44,25 +44,27 @@
 	
 	<!-- -->
 	
-	<form method = "POST" >
+	<form action ="/results" method = "POST" >
 	
 	<!-- Row for min temp, max temp-->
 	<div class="row justify-content-center">
+		<label class=" text-left col-form-label mr-sm-2">Temperature Range</label>
 		<div class="form-group display-4">
-			<input type="text" input name = "min_temp" class="form-control mb-2 mr-sm-2 mb-sm-0 text-center" id="formGroupExampleInput" placeholder="Min Avg Temp" >
+			<input type="text" input name = "min_temp" class="form-control mb-2 mr-sm-2 mb-sm-0 text-center" id="formGroupExampleInput" value = 0>
 		</div>
 		<div class="form-group display-4">
-			<input type="text" input name = "max_temp" class="form-control mb-2 mr-sm-2 mb-sm-0 text-center" id="formGroupExampleInput" placeholder="Max Avg Temp">
+			<input type="text" input name = "max_temp" class="form-control mb-2 mr-sm-2 mb-sm-0 text-center" id="formGroupExampleInput" value = 75>
 		</div>
 	</div>
 	
 	<!-- Row for min median housing price, max median housing price-->
 	<div class="row justify-content-center">
+		<label class=" text-left col-form-label mr-sm-2">Housing Price Range</label>
 		<div class="form-group display-4">
-			<input type="text" input name = "min_house" class="form-control mb-2 mr-sm-2 mb-sm-0 text-center" id="formGroupExampleInput" placeholder="Min House Price" >
+			<input type="text" input name = "min_house" class="form-control mb-2 mr-sm-2 mb-sm-0 text-center" id="formGroupExampleInput" value = 0>
 		</div>
 		<div class="form-group display-4">
-			<input type="text" input name = "max_house" class="form-control mb-2 mr-sm-2 mb-sm-0 text-center" id="formGroupExampleInput" placeholder="Max House Price">
+			<input type="text" input name = "max_house" class="form-control mb-2 mr-sm-2 mb-sm-0 text-center" id="formGroupExampleInput" value = 7526600>
 		</div>
 	</div>
 	

@@ -10,9 +10,51 @@
 
 	<!-- JQuery CDN link-->
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	
+	
+	
+	<style>
+	.center-div
+	{
+		margin: 0 auto;
+	}
+	.button {
+		 background-color: #4CAF50;
+	}
+	</style>
+	
+</head>
 
+<body>
 
+	
 	<script>
+	
+		var map, heatmap;
+		
+		function initMap() {
+        map = new google.maps.Map(document.getElementById("map"), {
+          zoom: 13,
+          center: {lat: 37.775, lng: -122.434},
+        });
+		
+		heatmap = new google.maps.visualization.HeatmapLayer({
+          data: getPoints(),
+          map: map
+        });
+		}
+		
+	  
+		function getPoints() {
+        return [
+          new google.maps.LatLng(37.782551, -122.445368),
+          new google.maps.LatLng(37.782745, -122.444586),
+          new google.maps.LatLng(37.782842, -122.443688),
+          new google.maps.LatLng(37.782919, -122.442815)
+		  ];
+		}
+		
+		
 		<!-- JavaScript function to create table based on data returned from application.py -->
 		$(document).ready(function createTable(){
 			var mydata = {{ returnedData|safe }}		
@@ -42,6 +84,17 @@
 				tRow = table.insertRow(-1);
 				for (var j = 0; j < col.length; j++) {
 					var cell = tRow.insertCell(-1);
+					/*if(j == 0){
+						var button = document.createElement("button");
+						button.style.backgroundColor = 'inherit';
+						button.style.border = "none";
+						button.innerHTML = mydata[i][col[j]];
+						cell.appendChild(button);
+					}
+					else{
+						cell.innerHTML = mydata[i][col[j]];
+					}*/
+					
 					cell.innerHTML = mydata[i][col[j]];
 				}
 			}
@@ -56,8 +109,8 @@
     });
 	
 	</script>
-</head>
-<body>
+
+
 
 	<nav class="navbar navbar-expand-lg navbar-dark bg-dark text-white">
   <a class="navbar-brand" href="#"></a>
@@ -83,7 +136,7 @@
 		
 	</div>
 	
-	
+	<div id="map" class = "center-div" align = "center" style="width:75%;height:300px;"></div>
 	<p id = "output1" align = "center"></p>
 
 
@@ -92,6 +145,9 @@
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+	
+	<script async defer src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=visualization&callback=initMap"
+  type="text/javascript"></script>
   </body>
 
 </html>
