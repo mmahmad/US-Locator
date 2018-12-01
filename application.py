@@ -98,14 +98,26 @@ def my_form_post():
 	#cursor.execute(query, [id, first, last, email])
 	#conn.commit()
 	
-	low = request.form['min_temp']
-	high = request.form['max_temp']
-	
-	min_house = request.form['min_house']
-	max_house = request.form['max_house']
+	low = 0
+	high = 75
 	
 	
-	query = 'SELECT ws.zipcode_id, ws.avg_temp, hs.median_house_price FROM home_stats hs JOIN weather_stats ws ON hs.zipcode_id = ws.zipcode_id WHERE avg_temp BETWEEN %s and %s AND median_house_price BETWEEN %s and %s'
+	min_house = 0
+	max_house = 7526600
+	
+
+	
+	
+	if(request.form.get('temp_check')):
+		low = request.form['min_temp']
+		high = request.form['max_temp']
+		
+	if(request.form.get('house_check')):
+		min_house = request.form['min_house']
+		max_house = request.form['max_house']
+
+	
+	query = 'SELECT ws.zipcode_id, z.zipcode, z.latitude, z.longitude, z.county_name, z.state, ws.avg_temp, hs.median_house_price FROM home_stats hs JOIN weather_stats ws ON hs.zipcode_id = ws.zipcode_id JOIN zipcodes z ON z.id = ws.zipcode_id WHERE avg_temp BETWEEN %s and %s AND median_house_price BETWEEN %s and %s'
 	cursor.execute(query, (low, high, min_house, max_house))
 	returnedData = cursor.fetchall()
 	returnedData = json.dumps(returnedData)

@@ -34,8 +34,8 @@
 		
 		function initMap() {
         map = new google.maps.Map(document.getElementById("map"), {
-          zoom: 13,
-          center: {lat: 37.775, lng: -122.434},
+          zoom: 4,
+          center: {lat: 39.825, lng: -98.5795},
         });
 		
 		heatmap = new google.maps.visualization.HeatmapLayer({
@@ -46,12 +46,15 @@
 		
 	  
 		function getPoints() {
-        return [
-          new google.maps.LatLng(37.782551, -122.445368),
-          new google.maps.LatLng(37.782745, -122.444586),
-          new google.maps.LatLng(37.782842, -122.443688),
-          new google.maps.LatLng(37.782919, -122.442815)
-		  ];
+		var mydata = {{ returnedData|safe }}
+		var dataPoints = [];
+		
+		for (var i = 0; i < mydata.length; i++) {
+			dataPoints.push(new google.maps.LatLng(mydata[i].latitude, mydata[i].longitude))
+		}
+		
+		return dataPoints;	
+		  
 		}
 		
 		
@@ -121,9 +124,6 @@
     <ul class="navbar-nav ml-auto">
       <li class="nav-item active">
         <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
-      </li>
-      <li class="nav-item active">
-        <a class="nav-link" href="#">Maps</a>
       </li>
   
     </ul>

@@ -8,7 +8,13 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 	
-	
+	<style>
+		input[type=checkbox].float-checkbox{
+
+		margin: 10px 10px 10px 10px;
+		cursor: pointer;
+		}
+	</style>
 </head>
 <body>
 
@@ -21,9 +27,6 @@
     <ul class="navbar-nav ml-auto">
       <li class="nav-item active">
         <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
-      </li>
-      <li class="nav-item active">
-        <a class="nav-link" href="#">Maps</a>
       </li>
   
     </ul>
@@ -47,7 +50,8 @@
 	<form action ="/results" method = "POST" >
 	
 	<!-- Row for min temp, max temp-->
-	<div class="row justify-content-center">
+	
+	<div class="row justify-content-center">	
 		<label class=" text-left col-form-label mr-sm-2">Temperature Range</label>
 		<div class="form-group display-4">
 			<input type="text" input name = "min_temp" class="form-control mb-2 mr-sm-2 mb-sm-0 text-center" id="formGroupExampleInput" value = 0>
@@ -55,6 +59,7 @@
 		<div class="form-group display-4">
 			<input type="text" input name = "max_temp" class="form-control mb-2 mr-sm-2 mb-sm-0 text-center" id="formGroupExampleInput" value = 75>
 		</div>
+		<input class = "float-checkbox" margin-top = 10px type="checkbox" input name = "temp_check" id="inlineCheckbox1">
 	</div>
 	
 	<!-- Row for min median housing price, max median housing price-->
@@ -66,6 +71,7 @@
 		<div class="form-group display-4">
 			<input type="text" input name = "max_house" class="form-control mb-2 mr-sm-2 mb-sm-0 text-center" id="formGroupExampleInput" value = 7526600>
 		</div>
+		<input class = "float-checkbox" margin-top = 10px type="checkbox" input name = "house_check" id="inlineCheckbox2">
 	</div>
 	
 	
