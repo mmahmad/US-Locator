@@ -8,9 +8,6 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 	
-	<!-- JQuery CDN link-->
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-	
 	<style>
 		input[type=checkbox].float-checkbox{
 
@@ -20,15 +17,6 @@
 	</style>
 </head>
 <body>
-
-	<script>
-	$(document).ready(function checkLogin(){
-		var check = {{ logged_in }}
-		if (check == 1) 
-			document.getElementById("output2").innerHTML = {{ current_login_id }}
-		
-		});
-	</script>
 
 	<nav class="navbar navbar-expand-lg navbar-dark bg-dark text-white">
   <a class="navbar-brand" href="#"></a>
@@ -47,71 +35,50 @@
     </ul>
 	</div>
 	</nav>
-
 	
-	<div class = "text-center">
-		<h1 class = "display-1 text-center"><font size = "16"> Where to Live</font></h1>
-		
+	<form action ="/signin" method = "POST" >
+	<h1 class = "display-1 text-center"><font size = "16"> Login</font></h1>
+	<div class="row justify-content-center">	
+		<div class="form-group display-4">
+			<input type="text" input name = "user" class="form-control mb-2 mr-sm-2 mb-sm-0 text-center" id="formGroupExampleInput" placeholder = "username">
+		</div>
 	</div>
+	<div class="row justify-content-center">
+		<div class="form-group display-4">
+			<input type="password" input name = "password" class="form-control mb-2 mr-sm-2 mb-sm-0 text-center" id="formGroupExampleInput2" placeholder = "password">
+		</div>
 	
-
-	<p id = "output2" align = "center"></p>
+	</div>
+	<div class="row justify-content-center">
+		<button type="submit" class="btn btn-primary text-center">Submit</button>
+	</div>
+	</form>
 	
 	
-	<br></br>
-	<br></br>
+	<!-- Sign up -->
 	
-	<h6 class = "display-4 text-center"><font size = "6"></font></h6>
+	<form action ="/create_acc" method = "POST" >
+	<h1 class = "display-1 text-center"><font size = "16"> Sign Up</font></h1>
+	<div class="row justify-content-center">	
+		<div class="form-group display-4">
+			<input type="text" input name = "userNew" class="form-control mb-2 mr-sm-2 mb-sm-0 text-center" id="formGroupExampleInput" placeholder = "username">
+		</div>
+	</div>
+	<div class="row justify-content-center">
+		<div class="form-group display-4">
+			<input type="password" input name = "passwordNew" class="form-control mb-2 mr-sm-2 mb-sm-0 text-center" id="formGroupExampleInput2" placeholder = "password">
+		</div>
+	
+	</div>
+	<div class="row justify-content-center">
+		<button type="submit" class="btn btn-primary text-center">Submit</button>
+	</div>
+	</form>
+	
 
 	
 	<!-- -->
 	
-	<form action ="/results" +  method = "POST" >
-	
-	<!-- Row for min temp, max temp-->
-	
-	<div class="row justify-content-center">	
-		<label class=" text-left col-form-label mr-sm-2">Temperature Range</label>
-		<div class="form-group display-4">
-			<input type="text" input name = "min_temp" class="form-control mb-2 mr-sm-2 mb-sm-0 text-center" id="formGroupExampleInput">
-		</div>
-		<div class="form-group display-4">
-			<input type="text" input name = "max_temp" class="form-control mb-2 mr-sm-2 mb-sm-0 text-center" id="formGroupExampleInput">
-		</div>
-		<input class = "float-checkbox" margin-top = 10px type="checkbox" input name = "temp_check" id="inlineCheckbox1">
-	</div>
-	
-	<!-- Row for min median housing price, max median housing price-->
-	<div class="row justify-content-center">
-		<label class=" text-left col-form-label mr-sm-2">Housing Price Range</label>
-		<div class="form-group display-4">
-			<input type="text" input name = "min_house" class="form-control mb-2 mr-sm-2 mb-sm-0 text-center" id="formGroupExampleInput">
-		</div>
-		<div class="form-group display-4">
-			<input type="text" input name = "max_house" class="form-control mb-2 mr-sm-2 mb-sm-0 text-center" id="formGroupExampleInput">
-		</div>
-		<input class = "float-checkbox" margin-top = 10px type="checkbox" input name = "house_check" id="inlineCheckbox2">
-	</div>
-	
-	<div class="row justify-content-center">
-		<label class=" text-left col-form-label mr-sm-2">Crimes Reported Range</label>
-		<div class="form-group display-4">
-			<input type="text" input name = "min_crime" class="form-control mb-2 mr-sm-2 mb-sm-0 text-center" id="formGroupExampleInput">
-		</div>
-		<div class="form-group display-4">
-			<input type="text" input name = "max_crime" class="form-control mb-2 mr-sm-2 mb-sm-0 text-center" id="formGroupExampleInput">
-		</div>
-		<input class = "float-checkbox" margin-top = 10px type="checkbox" input name = "crime_check" id="inlineCheckbox2">
-	</div>
-	
-		
-		<input type="hidden" name="login_id" value= {{ current_login_id }} />
-		
-		<div class="row justify-content-center">
-		<button type="submit" class="btn btn-primary text-center">Submit</button>
-		
-		</div>
-	</form>
 	
 	<br></br>
 	

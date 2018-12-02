@@ -42,7 +42,6 @@
           data: getPoints(),
           map: map
         });
-		}
 		
 	  
 		function getPoints() {
@@ -55,6 +54,17 @@
 		
 		return dataPoints;	
 		  
+		}
+		}
+		
+		
+		function fav(a) {
+			return function () {
+			//do something with a and b
+			//alert(a);
+			var id = {{ current_login_id|safe }}
+			window.location = '/favorites?userId=' + String(id) + '&zipcodeId=' + String(a); 
+		};
 		}
 		
 		
@@ -77,28 +87,38 @@
 			<!-- add first row for the headers -->
 			var tRow = table.insertRow(-1);                  
 
-			for (var i = 0; i < col.length; i++) {
-				var tHead = document.createElement("th");    
-				tHead.innerHTML = col[i];
-				tRow.appendChild(tHead);
+			for (var i = -1; i < col.length; i++) {
+				var tHead = document.createElement("th");   
+				if(i == -1){
+					tRow.appendChild(tHead);
+				}
+				else{
+					tHead.innerHTML = col[i];
+					tRow.appendChild(tHead);
+				}
 			}
 
 			for (var i = 0; i < mydata.length; i++) {
 				tRow = table.insertRow(-1);
-				for (var j = 0; j < col.length; j++) {
-					var cell = tRow.insertCell(-1);
-					/*if(j == 0){
+				for (var j = -1; j < col.length; j++) {
+					if(j == -1){
+						var cellFav = tRow.insertCell(-1);
 						var button = document.createElement("button");
 						button.style.backgroundColor = 'inherit';
+						button.value = mydata[i][col[0]]
+						button.onclick = fav( mydata[i][col[0]])
+						button.style.color = "orange";
 						button.style.border = "none";
-						button.innerHTML = mydata[i][col[j]];
-						cell.appendChild(button);
+						button.innerHTML = "&#9734;";
+						button.title="Favorite";
+						cellFav.appendChild(button);
 					}
 					else{
+						var cell = tRow.insertCell(-1);
 						cell.innerHTML = mydata[i][col[j]];
-					}*/
+					}
 					
-					cell.innerHTML = mydata[i][col[j]];
+					//cell.innerHTML = mydata[i][col[j]];
 				}
 			}
 
@@ -125,6 +145,9 @@
       <li class="nav-item active">
         <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
       </li>
+	    <li class="nav-item active">
+        <a class="nav-link" href="/login">Login <span class="sr-only">(current)</span></a>
+      </li>
   
     </ul>
 	</div>
@@ -135,6 +158,7 @@
 		<h1 class = "display-1 text-center"><font size = "16"> Results</font></h1>
 		
 	</div>
+	
 	
 	<div id="map" class = "center-div" align = "center" style="width:75%;height:300px;"></div>
 	<p id = "output1" align = "center"></p>
