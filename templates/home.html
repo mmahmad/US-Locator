@@ -26,8 +26,47 @@
 		var check = {{ logged_in }}
 		if (check == 1) 
 			document.getElementById("output2").innerHTML = {{ current_login_id }}
-		
+			
+			// Set listener for temperatureCheckbox. If checked, enable both inputs, else disable.
+			$("#temperatureCheckbox").change(function () {
+			
+			if (this.checked) {
+				$("#inputTempMin").prop('disabled', false);
+				$("#inputTempMax").prop('disabled', false);
+			} else {
+				$("#inputTempMin").prop('disabled', true);
+				$("#inputTempMax").prop('disabled', true);
+			}
 		});
+
+			// Set listener for housePriceCheckbox. If checked, enable both inputs, else disable.
+			$("#housePriceCheckbox").change(function () {
+			if (this.checked) {
+				$("#inputHousePriceMin").prop('disabled', false);
+				$("#inputHousePriceMax").prop('disabled', false);
+			} else {
+				$("#inputHousePriceMin").prop('disabled', true);
+				$("#inputHousePriceMax").prop('disabled', true);
+			}
+		});
+
+			// Set listener for crimeCheckbox. If checked, enable both inputs, else disable.
+			$("#crimeCheckbox").change(function () {
+			if (this.checked) {
+				$("#inputCrimeMin").prop('disabled', false);
+				$("#inputCrimeMax").prop('disabled', false);
+			} else {
+				$("#inputCrimeMin").prop('disabled', true);
+				$("#inputCrimeMax").prop('disabled', true);
+			}
+		});
+
+
+
+		});
+
+
+
 	</script>
 
 	<nav class="navbar navbar-expand-lg navbar-dark bg-dark text-white">
@@ -73,35 +112,35 @@
 	<div class="row justify-content-center">	
 		<label class=" text-left col-form-label mr-sm-2">Temperature Range</label>
 		<div class="form-group display-4">
-			<input type="text" input name = "min_temp" class="form-control mb-2 mr-sm-2 mb-sm-0 text-center" id="formGroupExampleInput">
+			<input type="text" input name = "min_temp" class="form-control mb-2 mr-sm-2 mb-sm-0 text-center" id="inputTempMin">
 		</div>
 		<div class="form-group display-4">
-			<input type="text" input name = "max_temp" class="form-control mb-2 mr-sm-2 mb-sm-0 text-center" id="formGroupExampleInput">
+			<input type="text" input name = "max_temp" class="form-control mb-2 mr-sm-2 mb-sm-0 text-center" id="inputTempMax">
 		</div>
-		<input class = "float-checkbox" margin-top = 10px type="checkbox" input name = "temp_check" id="inlineCheckbox1">
+		<input class = "float-checkbox" margin-top = 10px type="checkbox" input name = "temp_check" id="temperatureCheckbox" checked>
 	</div>
 	
 	<!-- Row for min median housing price, max median housing price-->
 	<div class="row justify-content-center">
 		<label class=" text-left col-form-label mr-sm-2">Housing Price Range</label>
 		<div class="form-group display-4">
-			<input type="text" input name = "min_house" class="form-control mb-2 mr-sm-2 mb-sm-0 text-center" id="formGroupExampleInput">
+			<input type="text" input name = "min_house" class="form-control mb-2 mr-sm-2 mb-sm-0 text-center" id="inputHousePriceMin" disabled>
 		</div>
 		<div class="form-group display-4">
-			<input type="text" input name = "max_house" class="form-control mb-2 mr-sm-2 mb-sm-0 text-center" id="formGroupExampleInput">
+			<input type="text" input name = "max_house" class="form-control mb-2 mr-sm-2 mb-sm-0 text-center" id="inputHousePriceMax" disabled>
 		</div>
-		<input class = "float-checkbox" margin-top = 10px type="checkbox" input name = "house_check" id="inlineCheckbox2">
+		<input class = "float-checkbox" margin-top = 10px type="checkbox" input name = "house_check" id="housePriceCheckbox">
 	</div>
 	
 	<div class="row justify-content-center">
 		<label class=" text-left col-form-label mr-sm-2">Crimes Reported Range</label>
 		<div class="form-group display-4">
-			<input type="text" input name = "min_crime" class="form-control mb-2 mr-sm-2 mb-sm-0 text-center" id="formGroupExampleInput">
+			<input type="text" input name = "min_crime" class="form-control mb-2 mr-sm-2 mb-sm-0 text-center" id="inputCrimeMin" disabled>
 		</div>
 		<div class="form-group display-4">
-			<input type="text" input name = "max_crime" class="form-control mb-2 mr-sm-2 mb-sm-0 text-center" id="formGroupExampleInput">
+			<input type="text" input name = "max_crime" class="form-control mb-2 mr-sm-2 mb-sm-0 text-center" id="inputCrimeMax" disabled>
 		</div>
-		<input class = "float-checkbox" margin-top = 10px type="checkbox" input name = "crime_check" id="inlineCheckbox2">
+		<input class = "float-checkbox" margin-top = 10px type="checkbox" input name = "crime_check" id="crimeCheckbox">
 	</div>
 	
 		
