@@ -75,8 +75,15 @@ def not_found(error):
 
 @application.route('/')
 def users():
-	return render_template('home.html', logged_in = 0, current_login_id = 0)
-
+	return render_template('login.html', logged_in = 0, current_login_id = 0)
+	
+	
+@application.route('/home', methods=['POST'])
+def home():
+	if(request.form.get('login_id')):
+		current_login_id = request.form['login_id']
+	logged_in = 1
+	return render_template('home.html', logged_in = logged_in, current_login_id = current_login_id)
 
 
 

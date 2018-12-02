@@ -22,12 +22,18 @@
 <body>
 
 	<script>
-	$(document).ready(function checkLogin(){
-		var check = {{ logged_in }}
+	$(document).ready(function saveLogin(){
+		/*var check = {{ logged_in }}
 		if (check == 1) 
 			document.getElementById("output2").innerHTML = {{ current_login_id }}
 		
+		});*/
+		
+		var id = {{ current_login_id|safe }}
+		window.localStorage.setItem("current_login_id", id)
+		
 		});
+		
 	</script>
 
 	<nav class="navbar navbar-expand-lg navbar-dark bg-dark text-white">
@@ -37,12 +43,14 @@
   </button>
   <div class="collapse navbar-collapse" id="navbarNav">
     <ul class="navbar-nav ml-auto">
-      <li class="nav-item active">
-        <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+      <!--<li class="nav-item active">
+        <a class="nav-link" href="/home">Home <span class="sr-only">(current)</span></a>
+		
+		
       </li>
 	  <li class="nav-item active">
         <a class="nav-link" href="/login">Login <span class="sr-only">(current)</span></a>
-      </li>
+      </li>-->
   
     </ul>
 	</div>
