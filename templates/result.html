@@ -127,31 +127,34 @@
 			<!-- add first row for the headers -->
 			var tRow = table.insertRow(-1);                  
 
-			for (var i = -1; i < col.length; i++) {
-				var tHead = document.createElement("th");   
-				if(i == -1){
-					tRow.appendChild(tHead);
-				}
-				else{
+			for (var i = 0; i < col.length; i++) {
+				var tHead = document.createElement("th");
+				if (i > 0) { // skip the innerHTML for the favorite column
 					tHead.innerHTML = col[i];
-					tRow.appendChild(tHead);
-				}
+				}   
+				
+				tRow.appendChild(tHead);
 			}
 
 			for (var i = 0; i < mydata.length; i++) {
 				tRow = table.insertRow(-1);
-				for (var j = -1; j < col.length; j++) {
-					if(j == -1){
+				for (var j = 0; j < col.length; j++) {
+					if(j == 0){
 						var cellFav = tRow.insertCell(-1);
 						var button = document.createElement("button");
 						button.style.backgroundColor = 'inherit';
 						button.style.cursor = 'pointer';
-						button.value = mydata[i][col[0]]
+						button.value = mydata[i][col[1]]
 						button.id="fav-button-" + i;
 						button.onclick = fav(button.id, button.value)
 						button.style.color = "orange";
 						button.style.border = "none";
-						button.innerHTML = "&#9734;";
+						if (mydata[i][col[j]] === '0') {
+							button.innerHTML = "&#9734;";
+						} else if (mydata[i][col[j]] === '1') {
+							button.innerHTML = "&#9733;";
+						}
+						// button.innerHTML = "&#9734;";
 						button.title="Favorite";
 						cellFav.appendChild(button);
 					}
@@ -159,8 +162,6 @@
 						var cell = tRow.insertCell(-1);
 						cell.innerHTML = mydata[i][col[j]];
 					}
-					
-					//cell.innerHTML = mydata[i][col[j]];
 				}
 			}
 
