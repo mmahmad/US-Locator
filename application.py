@@ -179,8 +179,8 @@ def my_form_post():
 		max_crime = request.form['max_crime']
 
 	
-	query = 'SELECT ws.zipcode_id, z.zipcode, z.latitude, z.longitude, z.county_name, cd.violent_crimes_total, z.state, ws.avg_temp, hs.median_house_price FROM home_stats hs JOIN weather_stats ws ON hs.zipcode_id = ws.zipcode_id JOIN zipcodes z ON z.id = ws.zipcode_id JOIN county_crime_data cd ON z.county_name = cd.county WHERE avg_temp BETWEEN %s and %s AND median_house_price BETWEEN %s and %s and violent_crimes_total BETWEEN %s and %s'
-	cursor.execute(query, (low, high, min_house, max_house, min_crime, max_crime))
+	query = 'SELECT case WHEN z.id IN (SELECT f.zipcode_id FROM favorites f WHERE f.user_id=%s and f.zipcode_id=z.id) THEN "1" ELSE "0" END as is_favorite , ws.zipcode_id, z.zipcode, z.latitude, z.longitude, z.county_name, cd.violent_crimes_total, z.state, ws.avg_temp, hs.median_house_price FROM home_stats hs JOIN weather_stats ws ON hs.zipcode_id = ws.zipcode_id JOIN zipcodes z ON z.id = ws.zipcode_id JOIN county_crime_data cd ON z.county_name = cd.county WHERE avg_temp BETWEEN %s and %s AND median_house_price BETWEEN %s and %s and violent_crimes_total BETWEEN %s and %s'
+	cursor.execute(query, (current_login_id, low, high, min_house, max_house, min_crime, max_crime))
 	returnedData = cursor.fetchall()
 	print('length of data:')
 	print(len(returnedData))
