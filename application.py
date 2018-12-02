@@ -182,20 +182,22 @@ def my_form_post():
 	query = 'SELECT ws.zipcode_id, z.zipcode, z.latitude, z.longitude, z.county_name, cd.violent_crimes_total, z.state, ws.avg_temp, hs.median_house_price FROM home_stats hs JOIN weather_stats ws ON hs.zipcode_id = ws.zipcode_id JOIN zipcodes z ON z.id = ws.zipcode_id JOIN county_crime_data cd ON z.county_name = cd.county WHERE avg_temp BETWEEN %s and %s AND median_house_price BETWEEN %s and %s and violent_crimes_total BETWEEN %s and %s'
 	cursor.execute(query, (low, high, min_house, max_house, min_crime, max_crime))
 	returnedData = cursor.fetchall()
+	print('length of data:')
+	print(len(returnedData))
 	returnedData = json.dumps(returnedData)
 	
 	return render_template('result.html', returnedData = returnedData, current_login_id = current_login_id)
 
-@application.route('/favorites', methods=['POST', 'GET', 'PUT', 'DELETE'])
-def favorite():
-	# Add to favorites list
-	if request.method == 'GET':
-		zipcodeId = request.args.get('zipcodeId')
-		userId = request.args.get('userId')	
-		query = 'INSERT INTO favorites(user_id, zipcode_id) VALUES (%s, %s)'
-		cursor.execute(query, (userId, zipcodeId))
-		conn.commit()
-		return render_template('home.html')
+# @application.route('/favorites', methods=['POST', 'GET', 'PUT', 'DELETE'])
+# def favorite():
+# 	# Add to favorites list
+# 	if request.method == 'GET':
+# 		zipcodeId = request.args.get('zipcodeId')
+# 		userId = request.args.get('userId')	
+# 		query = 'INSERT INTO favorites(user_id, zipcode_id) VALUES (%s, %s)'
+# 		cursor.execute(query, (userId, zipcodeId))
+# 		conn.commit()
+# 		return render_template('home.html')
 
 ############################################ APIs Begin ################################################################################
 
@@ -295,10 +297,13 @@ def addFavorite():
 		return jsonify({'success': 'Favorite zipcode updated'})
 
 	elif request.method == 'DELETE':
-		favoritesId = request.args.get('favoritesId')
+		# favoritesId = request.args.get('favoritesId')
+
+		userId = request.args.get('userId')
+		zipcodeId = request.args.get('zipcodeId')
 		
-		query = 'DELETE FROM favorites WHERE id=%s'
-		cursor.execute(query, (favoritesId))
+		query = 'DELETE FROM favorites WHERE user_id=%s AND zipcode_id=%s'
+		cursor.execute(query, (userId, zipcodeId))
 		conn.commit()
 		return jsonify({'success': 'Zipcode deleted from favorites list'})
 
