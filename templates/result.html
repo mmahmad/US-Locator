@@ -10,9 +10,104 @@
 
 	<!-- JQuery CDN link-->
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+	 <!-- <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script> -->
+	
+	<style>
+	.center-div
+	{
+		margin: 0 auto;
+	}
+	.button {
+		 background-color: #4CAF50;
+	}
+	</style>
+	
+</head>
 
+<body>
 
+	
 	<script>
+	
+		var map, heatmap;
+		
+		function initMap() {
+        map = new google.maps.Map(document.getElementById("map"), {
+          zoom: 4,
+          center: {lat: 39.825, lng: -98.5795},
+        });
+		
+		heatmap = new google.maps.visualization.HeatmapLayer({
+          data: getPoints(),
+          map: map
+        });
+		
+	  
+		function getPoints() {
+		var mydata = {{ returnedData|safe }}
+		var dataPoints = [];
+		
+		for (var i = 0; i < mydata.length; i++) {
+			dataPoints.push(new google.maps.LatLng(mydata[i].latitude, mydata[i].longitude))
+		}
+		
+		return dataPoints;	
+		  
+		}
+		}
+		
+		
+		function fav(button_id, zipcodeId) {
+			return function () {
+			//do something with a and b
+			//alert(a);
+
+			var userId = {{ current_login_id|safe }}
+
+			console.log('button clicked: ');
+			console.log(button_id);
+			console.log('button value:');
+			console.log(zipcodeId);
+
+			console.log($("#"+button_id).text());
+			if ($("#"+button_id).html()==="\u2606") {
+				console.log('favorite');
+				$.post("/api/user/favorites", {"userId": userId, "zipcodeId": zipcodeId}, function(data, status){
+        		// alert("Data: " + data + "\nStatus: " + status);
+				console.log("data");
+				console.log(data);
+				console.log('status:');
+				console.log(status);
+				if (status === 'success') {
+					console.log('done');
+					// fill button
+					$("#"+button_id).html("&#9733;");
+
+				}
+    		});
+			} else if ($("#"+button_id).html()==="\u2605") {
+				console.log('delete this favorite');
+				$.ajax({
+    				url: '/api/user/favorites?userId=' + userId + '&zipcodeId=' + zipcodeId, 
+    				type: 'DELETE',
+    				success: function(result) {
+        				// Do something with the result
+						console.log("delete result");
+						console.log(result);
+
+						$("#"+button_id).html("&#9734;");
+    				}
+				});
+			}
+
+			
+			// window.location = '/favorites?userId=' + String(id) + '&zipcodeId=' + String(a); 
+
+		};
+		}
+		
+		
 		<!-- JavaScript function to create table based on data returned from application.py -->
 		$(document).ready(function createTable(){
 			var mydata = {{ returnedData|safe }}		
@@ -33,16 +128,40 @@
 			var tRow = table.insertRow(-1);                  
 
 			for (var i = 0; i < col.length; i++) {
-				var tHead = document.createElement("th");    
-				tHead.innerHTML = col[i];
+				var tHead = document.createElement("th");
+				if (i > 0) { // skip the innerHTML for the favorite column
+					tHead.innerHTML = col[i];
+				}   
+				
 				tRow.appendChild(tHead);
 			}
 
 			for (var i = 0; i < mydata.length; i++) {
 				tRow = table.insertRow(-1);
 				for (var j = 0; j < col.length; j++) {
-					var cell = tRow.insertCell(-1);
-					cell.innerHTML = mydata[i][col[j]];
+					if(j == 0){
+						var cellFav = tRow.insertCell(-1);
+						var button = document.createElement("button");
+						button.style.backgroundColor = 'inherit';
+						button.style.cursor = 'pointer';
+						button.value = mydata[i][col[1]]
+						button.id="fav-button-" + i;
+						button.onclick = fav(button.id, button.value)
+						button.style.color = "orange";
+						button.style.border = "none";
+						if (mydata[i][col[j]] === '0') {
+							button.innerHTML = "&#9734;";
+						} else if (mydata[i][col[j]] === '1') {
+							button.innerHTML = "&#9733;";
+						}
+						// button.innerHTML = "&#9734;";
+						button.title="Favorite";
+						cellFav.appendChild(button);
+					}
+					else{
+						var cell = tRow.insertCell(-1);
+						cell.innerHTML = mydata[i][col[j]];
+					}
 				}
 			}
 
@@ -56,8 +175,8 @@
     });
 	
 	</script>
-</head>
-<body>
+
+
 
 	<nav class="navbar navbar-expand-lg navbar-dark bg-dark text-white">
   <a class="navbar-brand" href="#"></a>
@@ -69,8 +188,8 @@
       <li class="nav-item active">
         <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
       </li>
-      <li class="nav-item active">
-        <a class="nav-link" href="#">Maps</a>
+	    <li class="nav-item active">
+        <a class="nav-link" href="/login">Login <span class="sr-only">(current)</span></a>
       </li>
   
     </ul>
@@ -84,14 +203,13 @@
 	</div>
 	
 	
+	<div id="map" class = "center-div" align = "center" style="width:75%;height:300px;"></div>
 	<p id = "output1" align = "center"></p>
-
-
-
- <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+	
+	<script async defer src="https://maps.googleapis.com/maps/api/js?key=API_KEY&libraries=visualization&callback=initMap"
+  type="text/javascript"></script>
   </body>
 
 </html>

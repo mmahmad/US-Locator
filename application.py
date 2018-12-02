@@ -42,6 +42,8 @@ cursor = conn.cursor()
 
 # print a nice greeting.
 
+#current_login_id = 0
+
 
 def say_hello(username="World"):
 	return '<p>Hello %s!</p>\n' % username
@@ -73,17 +75,67 @@ def not_found(error):
 
 @application.route('/')
 def users():
-	#cursor.execute(''' SELECT * FROM ebdb.test limit 0, 1; ''')
-	#rv = cursor.fetchall()
-	# print(rv)
-	return render_template('home.html')
-
-	# return "<p>Hello World!</p>"
-	# print rv
-	# return str(rv)
+	return render_template('home.html', logged_in = 0, current_login_id = 0)
 
 
-@application.route('/', methods=['POST'])
+
+
+@application.route('/login')
+def login_page():
+	return render_template('login.html')
+
+	
+@application.route('/create_acc', methods=['POST'])
+def createAcc():
+	user = request.form['userNew']
+	password = request.form['passwordNew']
+	
+	query = 'SELECT username FROM users WHERE username = %s'
+	cursor.execute(query, (user))
+	
+	returnedData = cursor.fetchall()
+	
+	if len(returnedData) > 0:
+		# user already exists, so return error
+		return jsonify({'error': 'Username already exists.'})
+		
+	
+	query1 = "SELECT max(id) FROM users"
+	cursor.execute(query1)
+	
+	max_id = cursor.fetchall()
+	max_id = max_id[0]['max(id)']
+	
+	new_id = max_id + 1
+	
+	query2 = "INSERT INTO ebdb.users VALUES(%s, %s, %s)"
+	cursor.execute(query2, [new_id, user, password])
+	conn.commit()
+	
+	current_login_id = new_id
+	logged_in = 1
+	return render_template('home.html', logged_in = logged_in, current_login_id = current_login_id)
+	
+# User login
+@application.route('/signin', methods=['POST'])
+def signin():
+	username = request.form['user']
+	password = request.form['password']
+
+	query = 'SELECT id, username FROM users WHERE username = %s AND passwd=%s'
+	cursor.execute(query, (username, password))
+	returnedData = cursor.fetchall()
+	
+	if len(returnedData) > 0:
+		#return jsonify(returnedData[0]['id'])
+		current_login_id = returnedData[0]['id']
+		logged_in = 1;
+		return render_template('home.html', logged_in = logged_in, current_login_id = current_login_id)
+
+	else:
+		return jsonify({'error': 'Invalid username or password'})
+
+@application.route('/results', methods=['POST'])
 def my_form_post():
 	#id = request.form['id']
 	#first = request.form['fname']
@@ -98,22 +150,54 @@ def my_form_post():
 	#cursor.execute(query, [id, first, last, email])
 	#conn.commit()
 	
-	low = request.form['min_temp']
-	high = request.form['max_temp']
-	
-	min_house = request.form['min_house']
-	max_house = request.form['max_house']
+	low = 0
+	high = 75
 	
 	
-	query = 'SELECT ws.zipcode_id, ws.avg_temp, hs.median_house_price FROM home_stats hs JOIN weather_stats ws ON hs.zipcode_id = ws.zipcode_id WHERE avg_temp BETWEEN %s and %s AND median_house_price BETWEEN %s and %s'
-	cursor.execute(query, (low, high, min_house, max_house))
+	min_house = 0
+	max_house = 7526600
+	
+	min_crime = 0
+	max_crime = 994
+	
+	current_login_id = 0
+	
+	if(request.form.get('login_id')):
+		current_login_id = request.form['login_id']
+	
+	
+	if(request.form.get('temp_check')):
+		low = request.form['min_temp']
+		high = request.form['max_temp']
+		
+	if(request.form.get('house_check')):
+		min_house = request.form['min_house']
+		max_house = request.form['max_house']
+		
+	if(request.form.get('crime_check')):
+		min_crime = request.form['min_crime']
+		max_crime = request.form['max_crime']
+
+	
+	query = 'SELECT case WHEN z.id IN (SELECT f.zipcode_id FROM favorites f WHERE f.user_id=%s and f.zipcode_id=z.id) THEN "1" ELSE "0" END as is_favorite , ws.zipcode_id, z.zipcode, z.latitude, z.longitude, z.county_name, cd.violent_crimes_total, z.state, ws.avg_temp, hs.median_house_price FROM home_stats hs JOIN weather_stats ws ON hs.zipcode_id = ws.zipcode_id JOIN zipcodes z ON z.id = ws.zipcode_id JOIN county_crime_data cd ON z.county_name = cd.county WHERE avg_temp BETWEEN %s and %s AND median_house_price BETWEEN %s and %s and violent_crimes_total BETWEEN %s and %s'
+	cursor.execute(query, (current_login_id, low, high, min_house, max_house, min_crime, max_crime))
 	returnedData = cursor.fetchall()
+	print('length of data:')
+	print(len(returnedData))
 	returnedData = json.dumps(returnedData)
 	
-	return render_template('result.html', returnedData = returnedData)
+	return render_template('result.html', returnedData = returnedData, current_login_id = current_login_id)
 
-	#processed_text = text.upper()
-	# return processed_text
+# @application.route('/favorites', methods=['POST', 'GET', 'PUT', 'DELETE'])
+# def favorite():
+# 	# Add to favorites list
+# 	if request.method == 'GET':
+# 		zipcodeId = request.args.get('zipcodeId')
+# 		userId = request.args.get('userId')	
+# 		query = 'INSERT INTO favorites(user_id, zipcode_id) VALUES (%s, %s)'
+# 		cursor.execute(query, (userId, zipcodeId))
+# 		conn.commit()
+# 		return render_template('home.html')
 
 ############################################ APIs Begin ################################################################################
 
@@ -213,10 +297,13 @@ def addFavorite():
 		return jsonify({'success': 'Favorite zipcode updated'})
 
 	elif request.method == 'DELETE':
-		favoritesId = request.args.get('favoritesId')
+		# favoritesId = request.args.get('favoritesId')
+
+		userId = request.args.get('userId')
+		zipcodeId = request.args.get('zipcodeId')
 		
-		query = 'DELETE FROM favorites WHERE id=%s'
-		cursor.execute(query, (favoritesId))
+		query = 'DELETE FROM favorites WHERE user_id=%s AND zipcode_id=%s'
+		cursor.execute(query, (userId, zipcodeId))
 		conn.commit()
 		return jsonify({'success': 'Zipcode deleted from favorites list'})
 
