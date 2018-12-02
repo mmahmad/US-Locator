@@ -22,17 +22,17 @@
 <body>
 
 	<script>
-	$(document).ready(function saveLogin(){
-		/*var check = {{ logged_in }}
+	/*$(document).ready(function saveLogin(){
+		var check = {{ logged_in }}
 		if (check == 1) 
 			document.getElementById("output2").innerHTML = {{ current_login_id }}
 		
-		});*/
+		});
 		
 		var id = {{ current_login_id|safe }}
 		window.localStorage.setItem("current_login_id", id)
 		
-		});
+		});*/
 		
 	</script>
 
@@ -122,6 +122,14 @@
 	</form>
 	
 	<br></br>
+	
+	<form action ="/view_favorites" +  method = "POST" >
+		<input type="hidden" name="login_id" value= {{ current_login_id }} />
+		<div class="row justify-content-center">
+			<button type="submit" class="btn btn-primary text-center">View Favorites</button>
+		</div>
+	</form>
+	
 	
 	
 

@@ -191,10 +191,26 @@ def my_form_post():
 	returnedData = cursor.fetchall()
 	print('length of data:')
 	print(len(returnedData))
+
 	returnedData = json.dumps(returnedData)
 	
 	return render_template('result.html', returnedData = returnedData, current_login_id = current_login_id)
-
+	
+	
+@application.route('/view_favorites', methods=['POST'])
+def view_favorites():
+	if(request.form.get('login_id')):
+		current_login_id = request.form['login_id']
+	query = 'SELECT ws.zipcode_id, z.zipcode, z.latitude, z.longitude, z.county_name, z.state, ws.avg_temp, hs.median_house_price FROM home_stats hs JOIN weather_stats ws ON hs.zipcode_id = ws.zipcode_id JOIN zipcodes z ON z.id = ws.zipcode_id WHERE z.id IN (SELECT f.zipcode_id FROM favorites f WHERE f.user_id=%s and f.zipcode_id=z.id)' 
+	cursor.execute(query, (current_login_id))
+	returnedData = cursor.fetchall()
+	
+	print('length of data:')
+	print(len(returnedData))
+	returnedData = json.dumps(returnedData)
+	
+	return render_template('result.html', returnedData = returnedData, current_login_id = current_login_id)
+	
 # @application.route('/favorites', methods=['POST', 'GET', 'PUT', 'DELETE'])
 # def favorite():
 # 	# Add to favorites list
