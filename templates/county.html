@@ -10,6 +10,10 @@
 	
 	<!-- JQuery CDN link-->
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.css">
+  
+	<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.js"></script>
 	
 </head>
 <body>
@@ -40,19 +44,28 @@
 			<!-- create table to add to page -->
 			var table = document.createElement("table");
 			
-			<!-- add first row for the headers -->
-			var tRow = table.insertRow(-1);                  
+			table.setAttribute('id', 'result-table')
+			table.setAttribute('class', 'display')
+			theadu = document.createElement("thead")
+			table.appendChild(theadu)
+
+			theadtr = document.createElement("tr")              
 
 			for (var i = 0; i < col.length; i++) {
 				var tHead = document.createElement("th");
 				tHead.innerHTML = col[i];
 	 
 				
-				tRow.appendChild(tHead);
+				// tRow.appendChild(tHead);
+				theadtr.appendChild(tHead);
 			}
 
+			theadu.appendChild(theadtr);
+
+			tbody = document.createElement("tbody");
+
 			for (var i = 0; i < mydata.length; i++) {
-				tRow = table.insertRow(-1);
+				tRow = tbody.insertRow(-1);
 				for (var j = 0; j < col.length; j++) {
 					var cell = tRow.insertCell(-1);
 					if(j == 0){
@@ -71,13 +84,20 @@
 				}
 			}
 
+			table.appendChild(tbody);
+
 			var resultTable = document.getElementById("output1");
 			
 			<!--Make the table a bootstrap table -->
-			resultTable.className = 'table';
+			// resultTable.className = 'table';
 			
 			resultTable.innerHTML = "";
 			resultTable.appendChild(table);
+
+			// initialize table if mydata.length() > 1
+			if (mydata.length > 0) {
+				$('#result-table').DataTable();
+			}
     });
 	
 	</script>
@@ -85,7 +105,12 @@
 	<div class = "text-center">
 		<h1 class = "display-1 text-center"><font size = "16"> Results</font></h1>	
 	</div>
-	<p id = "output1" align = "center"></p>
+	<div class="container">
+		<div style="margin-top: 50px;">
+			<p id = "output1" align = "center"></p>
+		</div>
+	</div>
+	
 	
 
  <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
