@@ -85,6 +85,60 @@
 			}
 		});
 		
+		// Set defaults	
+			$("#temperatureCheckbox").prop('checked', true);
+			$("#inputTempMin").prop('disabled', false);
+			$("#inputTempMin").val("");
+			$("#inputTempMax").prop('disabled', false);
+			$("#inputTempMax").val("");
+
+			$("#housePriceCheckbox").prop('checked', false);
+			$("#inputHousePriceMin").prop('disabled', true);
+			$("#inputHousePriceMin").val("");
+			$("#inputHousePriceMax").prop('disabled', true);
+			$("#inputHousePriceMax").val("");
+
+			$("#crimeCheckbox").prop('checked', false);
+			$("#inputCrimeMin").prop('disabled', true);
+			$("#inputCrimeMin").val("");
+			$("#inputCrimeMax").prop('disabled', true);
+			$("#inputCrimeMax").val("");
+
+			// Set listener for temperatureCheckbox. If checked, enable both inputs, else disable.
+			$("#temperatureCheckbox").change(function () {
+			
+			if (this.checked) {
+				$("#inputTempMin").prop('disabled', false);
+				$("#inputTempMax").prop('disabled', false);
+			} else {
+				$("#inputTempMin").prop('disabled', true);
+				$("#inputTempMax").prop('disabled', true);
+			}
+		});
+
+			// Set listener for housePriceCheckbox. If checked, enable both inputs, else disable.
+			$("#housePriceCheckbox").change(function () {
+			if (this.checked) {
+				$("#inputHousePriceMin").prop('disabled', false);
+				$("#inputHousePriceMax").prop('disabled', false);
+			} else {
+				$("#inputHousePriceMin").prop('disabled', true);
+				$("#inputHousePriceMax").prop('disabled', true);
+			}
+		});
+
+			// Set listener for crimeCheckbox. If checked, enable both inputs, else disable.
+			$("#crimeCheckbox").change(function () {
+			if (this.checked) {
+				$("#inputCrimeMin").prop('disabled', false);
+				$("#inputCrimeMax").prop('disabled', false);
+			} else {
+				$("#inputCrimeMin").prop('disabled', true);
+				$("#inputCrimeMax").prop('disabled', true);
+			}
+		});
+
+		
 		});
 		
 	</script>
@@ -154,6 +208,17 @@
 		<input class = "float-checkbox" margin-top = 10px type="checkbox" input name = "house_check" id="housePriceCheckbox">
 	</div>
 	
+		<input type="hidden" name="login_id" value= {{ current_login_id }} />
+		
+		<div class="row justify-content-center">
+		<button type="submit" class="btn btn-primary text-center">Submit</button>
+		
+		</div>
+	</form>
+	
+	<br></br>
+	
+	<form action ="/county_tables" +  method = "POST" >
 	<div class="row justify-content-center">
 		<label class=" text-left col-form-label mr-sm-2">Crimes Reported Range</label>
 		<div class="form-group display-4">
@@ -173,8 +238,15 @@
 		
 		</div>
 	</form>
-	
 	<br></br>
+	
+	<form action ="/view_favorites" +  method = "POST" >
+		<input type="hidden" name="login_id" value= {{ current_login_id }} />
+		<div class="row justify-content-center">
+			<button type="submit" class="btn btn-primary text-center">View Favorites</button>
+		</div>
+	</form>
+	
 	
 	
 

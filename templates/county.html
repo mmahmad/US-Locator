@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>411 Project</title>
+       <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+	
+	<!-- JQuery CDN link-->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	
+</head>
+<body>
+	
+	<script>
+	
+	function link(county_name) {
+		return function () {
+			var id = {{ current_login_id|safe }}
+			window.location = '/county_zipcodes?userId=' + String(id) + '&countyName=' + String(county_name); 
+		
+		};
+	}
+
+	<!-- JavaScript function to create table based on data returned from application.py -->
+		$(document).ready(function createTable(){
+			var mydata = {{ returnedData|safe }}		
+  
+			var col = [];
+			for (var i = 0; i < mydata.length; i++) {
+				for (var key in mydata[i]) {
+					if (col.indexOf(key) === -1) {
+						col.push(key);
+					}
+				}
+			}
+
+			<!-- create table to add to page -->
+			var table = document.createElement("table");
+			
+			<!-- add first row for the headers -->
+			var tRow = table.insertRow(-1);                  
+
+			for (var i = 0; i < col.length; i++) {
+				var tHead = document.createElement("th");
+				tHead.innerHTML = col[i];
+	 
+				
+				tRow.appendChild(tHead);
+			}
+
+			for (var i = 0; i < mydata.length; i++) {
+				tRow = table.insertRow(-1);
+				for (var j = 0; j < col.length; j++) {
+					var cell = tRow.insertCell(-1);
+					if(j == 0){
+						var button = document.createElement("button");
+						button.style.backgroundColor = 'inherit';
+						button.onclick = link(mydata[i][col[0]]);
+						button.style.border = "none";
+						button.innerHTML = mydata[i][col[j]];
+						cell.appendChild(button);
+					}
+					else{
+						cell.innerHTML = mydata[i][col[j]];
+					}
+
+					
+				}
+			}
+
+			var resultTable = document.getElementById("output1");
+			
+			<!--Make the table a bootstrap table -->
+			resultTable.className = 'table';
+			
+			resultTable.innerHTML = "";
+			resultTable.appendChild(table);
+    });
+	
+	</script>
+	
+	<div class = "text-center">
+		<h1 class = "display-1 text-center"><font size = "16"> Results</font></h1>	
+	</div>
+	<p id = "output1" align = "center"></p>
+	
+
+ <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+ </body>
+</html>
