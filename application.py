@@ -331,7 +331,7 @@ def county_tables():
 		min_crime = request.form['min_crime']
 		max_crime = request.form['max_crime']
 		
-	query = 'SELECT cd.county, cd.violent_crimes_total, cd.rapes FROM county_crime_data cd WHERE violent_crimes_total BETWEEN %s and %s'
+	query = 'SELECT cd.county, cd.violent_crimes_total FROM county_crime_data cd WHERE violent_crimes_total BETWEEN %s and %s'
 	
 	cursor.execute(query, (min_crime, max_crime))
 	returnedData = cursor.fetchall()
@@ -352,7 +352,7 @@ def county_zipcodes():
 		
 		countyName = request.args.get('countyName')
 		#query = 'SELECT case WHEN z.id IN (SELECT f.zipcode_id FROM favorites f WHERE f.user_id=%s and f.zipcode_id=z.id) THEN "1" ELSE "0" END as is_favorite , ws.zipcode_id, z.zipcode, z.latitude, z.longitude, z.county_name, z.state, ws.avg_temp, hs.median_house_price FROM home_stats hs JOIN weather_stats ws ON hs.zipcode_id = ws.zipcode_id JOIN zipcodes z WHERE z.county_name = %s'
-		query = 'SELECT case WHEN z.id IN (SELECT f.zipcode_id FROM favorites f WHERE f.user_id=%s and f.zipcode_id=z.id) THEN "1" ELSE "0" END as is_favorite, z.zipcode FROM zipcodes z WHERE z.county_name = %s'
+		query = 'SELECT case WHEN z.id IN (SELECT f.zipcode_id FROM favorites f WHERE f.user_id=%s and f.zipcode_id=z.id) THEN "1" ELSE "0" END as is_favorite, z.zipcode, z.latitude, z.longitude FROM zipcodes z WHERE z.county_name = %s'
 	
 	
 		cursor.execute(query, (current_login_id, countyName))
