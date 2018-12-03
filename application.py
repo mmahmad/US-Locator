@@ -211,6 +211,54 @@ def view_favorites():
 	
 	return render_template('result.html', returnedData = returnedData, current_login_id = current_login_id)
 	
+@application.route('/county_tables', methods=['POST'])
+def county_tables():
+
+	current_login_id = 0
+	
+	if(request.form.get('login_id')):
+		current_login_id = request.form['login_id']
+		
+	min_crime = 0
+	max_crime = 994
+	
+	if(request.form.get('crime_check')):
+		min_crime = request.form['min_crime']
+		max_crime = request.form['max_crime']
+		
+	query = 'SELECT cd.county, cd.violent_crimes_total, cd.rapes FROM county_crime_data cd WHERE violent_crimes_total BETWEEN %s and %s'
+	
+	cursor.execute(query, (min_crime, max_crime))
+	returnedData = cursor.fetchall()
+	
+	returnedData = json.dumps(returnedData)
+	print('length of data:')
+	print(len(returnedData))
+	
+	
+	return render_template('county.html', returnedData = returnedData, current_login_id = current_login_id)
+	
+@application.route('/county_zipcodes', methods=['GET'])
+def county_zipcodes():
+
+		current_login_id = 0
+		if(request.form.get('userId')):
+			current_login_id = request.form['userId']
+		
+		countyName = request.form.get('countyName')
+		#query = 'SELECT case WHEN z.id IN (SELECT f.zipcode_id FROM favorites f WHERE f.user_id=%s and f.zipcode_id=z.id) THEN "1" ELSE "0" END as is_favorite , ws.zipcode_id, z.zipcode, z.latitude, z.longitude, z.county_name, z.state, ws.avg_temp, hs.median_house_price FROM home_stats hs JOIN weather_stats ws ON hs.zipcode_id = ws.zipcode_id JOIN zipcodes z WHERE z.county_name = %s'
+		query = 'SELECT zipcode FROM zipcodes WHERE county_name = %s'
+	
+	
+		cursor.execute(query, (countyName,))
+		
+		returnedData = cursor.fetchall()
+		
+		returnedData = json.dumps(returnedData)
+		
+		return render_template('result.html', returnedData = returnedData, current_login_id = current_login_id)
+		
+		
 # @application.route('/favorites', methods=['POST', 'GET', 'PUT', 'DELETE'])
 # def favorite():
 # 	# Add to favorites list
