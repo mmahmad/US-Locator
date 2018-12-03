@@ -173,25 +173,130 @@ def my_form_post():
 		current_login_id = request.form['login_id']
 	
 	
+	# if(request.form.get('temp_check')):
+	# 	low = request.form['min_temp']
+	# 	high = request.form['max_temp']
+		
+	# if(request.form.get('house_check')):
+	# 	min_house = request.form['min_house']
+	# 	max_house = request.form['max_house']
+		
+	# if(request.form.get('crime_check')):
+	# 	min_crime = request.form['min_crime']
+	# 	max_crime = request.form['max_crime']
+
+	
+	# query = 'SELECT case WHEN z.id IN (SELECT f.zipcode_id FROM favorites f WHERE f.user_id=%s and f.zipcode_id=z.id) THEN "1" ELSE "0" END as is_favorite , ws.zipcode_id, z.zipcode, z.latitude, z.longitude, z.county_name, cd.violent_crimes_total, z.state, ws.avg_temp, hs.median_house_price FROM home_stats hs JOIN weather_stats ws ON hs.zipcode_id = ws.zipcode_id JOIN zipcodes z ON z.id = ws.zipcode_id JOIN county_crime_data cd ON z.county_name = cd.county WHERE avg_temp BETWEEN %s and %s AND median_house_price BETWEEN %s and %s and violent_crimes_total BETWEEN %s and %s'
+	# cursor.execute(query, (current_login_id, low, high, min_house, max_house, min_crime, max_crime))
+	# returnedData = cursor.fetchall()
+	# print('length of data:')
+	# print(len(returnedData))
+
+	# returnedData = json.dumps(returnedData)
+	
+	# return render_template('result.html', returnedData = returnedData, current_login_id = current_login_id)
+
+	projections = [
+		"CASE WHEN z.id IN (SELECT f.zipcode_id FROM favorites f WHERE f.user_id=%s and f.zipcode_id=z.id) THEN '1' ELSE '0' END as is_favorite",
+		"z.id",
+		"z.zipcode",
+		"z.latitude",
+		"z.longitude"
+	]
+
+	joins = [
+		"zipcodes z "
+	]
+	# requiresWeather = False
+	# requiresHousePrice = False
+	# requiresCrime = False
+
+	conditionsRequired = 0
+	conditions = []
+	
 	if(request.form.get('temp_check')):
 		low = request.form['min_temp']
 		high = request.form['max_temp']
+		if low and high:
+			requiresWeather = True
+			# query += "JOIN weather_stats w ON z.id=w.zipcode_id "
+			joins.append("JOIN weather_stats w ON z.id=w.zipcode_id ")
+			conditionsRequired += 1
+			condition = "w.avg_temp BETWEEN {} and {} ".format(low, high)
+			projections.append("w.avg_temp as Average_Temperature")
+			conditions.append(condition)
+		else:
+			abort(404)
+
+	if(request.form.get('crime_check')):
+		min_crime = request.form['min_crime']
+		max_crime = request.form['max_crime']
+		if max_crime and min_crime:
+			requiresCrime = True
+			# query += "JOIN county_crime_data ccd ON z.county_name=ccd.county "
+			joins.append("JOIN county_crime_data ccd ON z.county_name=ccd.county ")
+			conditionsRequired += 1
+			condition = "ccd.violent_crimes_total BETWEEN {} and {} ".format(min_crime, max_crime)
+			projections.append("ccd.violent_crimes_total as Total_Violent_Crimes")
+			conditions.append(condition)
+		else:
+			abort(404)
 		
 	if(request.form.get('house_check')):
 		min_house = request.form['min_house']
 		max_house = request.form['max_house']
-		
-	if(request.form.get('crime_check')):
-		min_crime = request.form['min_crime']
-		max_crime = request.form['max_crime']
+		if min_house and max_house:
+			requiresHousePrice = True
+			# query += "JOIN home_stats hs ON z.id=hs.zipcode_id "
+			joins.append("JOIN home_stats hs ON z.id=hs.zipcode_id ")
+			conditionsRequired += 1
+			condition = "hs.median_house_price BETWEEN {} and {} ".format(min_house, max_house)
+			projections.append("hs.median_house_price as Median_House_Price")
+			conditions.append(condition)
+		else:
+			abort(404)
+
+	query = "SELECT "
+	for i in range(0, len(projections)):
+		if i == (len(projections) - 1):
+			query += projections[i]
+		else:
+			query += projections[i] + ","
+	
+	query += " FROM "
+
+	for join in joins:
+		query += join
+
+	# start adding conditions
+	query += " WHERE "
+
+	if len(conditions) == 1:
+		# just one condition
+		query += conditions[0] + ';'
+	elif len(conditions) > 1:
+		# separated by "and"
+		for i in range(0, len(conditions)):
+			if i == (len(conditions) - 1):
+				query += " AND " + conditions[i] + ";"
+			elif i==0:
+				query += conditions[i]
+			else:
+				query += " AND " + conditions[i]
+	else:
+		# No condition provided. Should never reach this part of code
+		print("ERROR! NO CONDITION PROVIDED!")
 
 	
-	query = 'SELECT case WHEN z.id IN (SELECT f.zipcode_id FROM favorites f WHERE f.user_id=%s and f.zipcode_id=z.id) THEN "1" ELSE "0" END as is_favorite , ws.zipcode_id, z.zipcode, z.latitude, z.longitude, z.county_name, cd.violent_crimes_total, z.state, ws.avg_temp, hs.median_house_price FROM home_stats hs JOIN weather_stats ws ON hs.zipcode_id = ws.zipcode_id JOIN zipcodes z ON z.id = ws.zipcode_id JOIN county_crime_data cd ON z.county_name = cd.county WHERE avg_temp BETWEEN %s and %s AND median_house_price BETWEEN %s and %s and violent_crimes_total BETWEEN %s and %s'
-	cursor.execute(query, (current_login_id, low, high, min_house, max_house, min_crime, max_crime))
+	# query = 'SELECT case WHEN z.id IN (SELECT f.zipcode_id FROM favorites f WHERE f.user_id=%s and f.zipcode_id=z.id) THEN "1" ELSE "0" END as is_favorite , ws.zipcode_id, z.zipcode, z.latitude, z.longitude, z.county_name, cd.violent_crimes_total, z.state, ws.avg_temp, hs.median_house_price FROM home_stats hs JOIN weather_stats ws ON hs.zipcode_id = ws.zipcode_id JOIN zipcodes z ON z.id = ws.zipcode_id JOIN county_crime_data cd ON z.county_name = cd.county WHERE avg_temp BETWEEN %s and %s AND median_house_price BETWEEN %s and %s and violent_crimes_total BETWEEN %s and %s'
+
+	print("final query:")
+	print(query)
+	# cursor.execute(query, (current_login_id, low, high, min_house, max_house, min_crime, max_crime))
+	cursor.execute(query, (current_login_id))
 	returnedData = cursor.fetchall()
 	print('length of data:')
 	print(len(returnedData))
-
 	returnedData = json.dumps(returnedData)
 	
 	return render_template('result.html', returnedData = returnedData, current_login_id = current_login_id)
