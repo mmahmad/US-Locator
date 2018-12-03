@@ -68,7 +68,20 @@
 		var dataPoints = [];
 		
 		for (var i = 0; i < mydata.length; i++) {
-			dataPoints.push(new google.maps.LatLng(mydata[i].latitude, mydata[i].longitude))
+		
+			var Latlng = new google.maps.LatLng(mydata[i].latitude, mydata[i].longitude);
+			var dataTitle = mydata[i].zipcode;
+			
+			if(mydata[i].is_favorite === '1'){
+				var marker = new google.maps.Marker({
+				position: Latlng,
+				map: map,
+				title: dataTitle 
+			});
+			}
+			
+			
+			dataPoints.push({location: new google.maps.LatLng(mydata[i].latitude, mydata[i].longitude), weight: 1});
 		}
 		
 		return dataPoints;	
